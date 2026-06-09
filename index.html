@@ -116,16 +116,16 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 
 /* ── GRID ── */
 .fleet-wrap{max-width:1400px;margin:0 auto;}
-.fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px;}
+.fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:10px;}
 .fleet-grid.row-view{grid-template-columns:1fr;}
 .card-hidden{display:none!important;}
 .sec-div{max-width:1400px;margin:18px auto 10px;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;display:flex;align-items:center;gap:8px;}
 .sec-div::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* ── CARD ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;position:relative;overflow:hidden;transition:border-color .15s,background .15s;user-select:none;}
-:root.light .card{box-shadow:0 1px 4px rgba(0,0,0,.07);}
-.card-bar{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:8px 0 0 8px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;position:relative;overflow:hidden;transition:border-color .15s,background .15s;user-select:none;}
+:root.light .card{box-shadow:0 1px 6px rgba(0,0,0,.08);}
+.card-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:10px 0 0 10px;}
 .card.k-in .card-bar{background:var(--in);}
 .card.k-out .card-bar{background:var(--out);}
 .card.k-offrun .card-bar{background:var(--offrun);}
@@ -134,47 +134,81 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .card.k-out{border-color:rgba(249,115,22,.22);}
 .card.k-offrun{border-color:rgba(167,139,250,.22);}
 .card.k-nil{opacity:.35;}
-.card.k-in:hover{border-color:rgba(34,197,94,.45);background:var(--in-dim);}
-.card.k-out:hover{border-color:rgba(249,115,22,.45);background:var(--out-dim);}
-.card.k-offrun:hover{border-color:rgba(167,139,250,.45);background:var(--offrun-dim);}
-.card-body{padding:12px 12px 12px 17px;display:flex;align-items:flex-start;gap:10px;}
-.card-ico{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.card.k-in:hover{border-color:rgba(34,197,94,.4);}
+.card.k-out:hover{border-color:rgba(249,115,22,.4);}
+.card.k-offrun:hover{border-color:rgba(167,139,250,.4);}
+/* New card layout: sidebar + main */
+.card-body{padding:0;display:flex;align-items:stretch;}
+.card-key-sidebar{width:52px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 0;border-right:1px solid var(--border);background:var(--surface2);padding-left:4px;}
+.card.k-out .card-key-sidebar{background:rgba(249,115,22,.05);}
+.card-key-num{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;line-height:1;}
+.card.k-in .card-key-num{color:var(--in);}
+.card.k-out .card-key-num{color:var(--out);}
+.card.k-offrun .card-key-num{color:var(--offrun);}
+.card.k-nil .card-key-num{color:var(--nil-text);}
+.card-key-lbl{font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+.card-main{flex:1;min-width:0;padding:12px 12px 11px 14px;display:flex;flex-direction:column;gap:6px;}
+.card-top-row{display:flex;align-items:flex-start;gap:10px;}
+.card-ico{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
 .card.k-in .card-ico{background:var(--in-dim);}
 .card.k-out .card-ico{background:var(--out-dim);}
 .card.k-offrun .card-ico{background:var(--offrun-dim);}
 .card.k-nil .card-ico{background:var(--border);}
 .card-info{flex:1;min-width:0;}
-.card-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-name{font-size:19px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em;line-height:1.1;}
 .card-reg{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;margin-top:2px;}
 .card.k-in .card-reg{color:var(--in);}
 .card.k-out .card-reg{color:var(--out);}
 .card.k-offrun .card-reg{color:var(--offrun);}
 .card.k-nil .card-reg{color:var(--nil-text);}
-.card-loc-row{display:flex;align-items:center;gap:4px;margin-top:4px;}
-.card-loc{font-size:10px;color:var(--text-dim);cursor:pointer;border-bottom:1px dashed transparent;transition:all .15s;}
-.card-loc:hover{color:var(--text);border-color:var(--text-dim);}
-.card-loc-edit{font-size:9px;color:var(--text-muted);opacity:0;cursor:pointer;transition:opacity .15s;}
-.card-loc-row:hover .card-loc-edit{opacity:1;}
+/* Status area top-right */
+.card-status-col{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+/* Location row */
+.card-loc-row{display:flex;align-items:center;gap:5px;}
+.card-loc-label{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);}
+.card-loc-pin{font-size:12px;line-height:1;}
+.card-bunch-badge{display:none;}/* hidden — key number now in sidebar */
+.midnight-banner{max-width:1400px;margin:0 auto 10px;background:linear-gradient(135deg,rgba(239,68,68,.12),transparent);border:1px solid rgba(239,68,68,.4);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:12px;}
+.midnight-banner-text .mb-title{font-size:12px;font-weight:700;color:var(--danger);}
+.midnight-banner-text .mb-sub{font-size:10px;color:var(--text-dim);margin-top:2px;}
+.midnight-banner-text{flex:1;}
+.midnight-flag{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;color:var(--danger);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;animation:pulseDanger 2s ease-in-out infinite;}
+@keyframes pulseDanger{0%,100%{opacity:1}50%{opacity:.5}}
+.card-remarks-bar{border-top:1px solid var(--border);padding:6px 12px 6px 17px;background:var(--surface2);display:flex;align-items:center;gap:7px;min-height:32px;}
+.rmk-text{flex:1;font-size:11px;color:var(--text-dim);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rmk-text.has-rmk{color:var(--text);font-style:normal;font-weight:500;}
+.rmk-edit-inline{background:var(--surface);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:3px 8px;outline:none;flex:1;transition:border-color .15s;display:none;}
+.rmk-edit-inline:focus{border-color:var(--accent);}
+.rmk-edit-inline.visible{display:block;}
+.rmk-bar-btn{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.rmk-bar-btn:hover{border-color:var(--border2);color:var(--text);}
+.rmk-bar-btn.save-rmk:hover{border-color:var(--in);color:var(--in);}
+.rmk-bar-btn.clr-rmk:hover{border-color:var(--danger);color:var(--danger);}
+.card-reg{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;margin-top:2px;}
+.card.k-in .card-reg{color:var(--in);}
+.card.k-out .card-reg{color:var(--out);}
+.card.k-offrun .card-reg{color:var(--offrun);}
+.card.k-nil .card-reg{color:var(--nil-text);}
 .loc-inp{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:2px 6px;outline:none;width:120px;display:none;}
 .loc-inp:focus{border-color:var(--accent);}
-.card-sub{font-size:10px;color:var(--text-dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.loc-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--text-dim);cursor:pointer;transition:color .15s;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.loc-chip:hover{color:var(--text);}
+.loc-chip-icon{font-size:11px;flex-shrink:0;display:none;}/* emoji replaced by pin icon */
+.card-loc-edit{font-size:9px;color:var(--text-muted);opacity:0;cursor:pointer;transition:opacity .15s;margin-left:2px;}
+.card-loc-row:hover .card-loc-edit{opacity:1;}
+.card-sub{font-size:10px;color:var(--text-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card-sub.out-sub{color:var(--out);font-weight:600;}
 .card-sub.or-sub{color:var(--offrun);}
-.card-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right;}
-.key-toggle{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px;}
-.kt-btn{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:4px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);transition:all .15s;white-space:nowrap;}
-.kt-btn.kt-in.active{background:var(--in);color:#fff;box-shadow:0 1px 5px var(--in-glow);}
-.kt-btn.kt-out.active{background:var(--out);color:#fff;box-shadow:0 1px 5px var(--out-glow);animation:pulseOut 2s ease-in-out infinite;}
-.kt-btn:not(.active):hover{background:var(--border);color:var(--text-dim);}
-@keyframes pulseOut{0%,100%{box-shadow:0 1px 5px var(--out-glow)}50%{box-shadow:0 2px 14px var(--out-glow)}}
+/* Removed: .card-right, .key-toggle, .kt-btn — toggle removed */
+@keyframes pulseOut{0%,100%{box-shadow:0 0 6px var(--out-glow)}50%{box-shadow:0 0 16px var(--out-glow)}}
 .since-txt{font-size:9px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
-.sw-wrap{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:5px;padding:3px 8px;text-align:center;}
-.sw-time{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;color:var(--out);letter-spacing:.1em;line-height:1.2;}
-.sw-lbl{font-size:8px;font-weight:700;color:var(--out);letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-top:1px;}
+.sw-wrap{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:5px;padding:4px 10px;text-align:center;}
+.sw-time{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:500;color:var(--out);letter-spacing:.1em;line-height:1.2;}
+.sw-lbl{font-size:8px;font-weight:700;color:var(--out);letter-spacing:.08em;text-transform:uppercase;opacity:.65;margin-top:1px;}
 .status-badge{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap;}
 .card.k-offrun .status-badge{color:var(--offrun);background:var(--offrun-dim);}
 .card.k-nil .status-badge{color:var(--nil-text);background:var(--border);}
-.card-foot{border-top:1px solid var(--border);padding:7px 12px 7px 17px;display:flex;align-items:center;gap:5px;background:var(--surface2);}
+.card-foot{border-top:1px solid var(--border);padding:7px 12px 7px 14px;display:flex;align-items:center;gap:5px;background:var(--surface2);}
 .fbtn{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .15s;white-space:nowrap;}
 .fbtn:hover{border-color:var(--border2);color:var(--text);}
 .fbtn.out-btn{border-color:var(--out);color:var(--out);}
@@ -185,8 +219,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .fbtn.or-btn:hover{background:var(--offrun-dim);}
 .fbtn.log-btn{color:var(--text-muted);margin-left:auto;}
 .fbtn.log-btn:hover{color:var(--text-dim);}
-.remarks-row{display:none;border-top:1px solid var(--border);padding:7px 12px 7px 17px;background:var(--surface2);align-items:center;gap:6px;}
-.remarks-row.open{display:flex;}
+.remarks-row{display:none!important;}
 .rmk-inp{flex:1;font-family:'Inter',sans-serif;font-size:11px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;color:var(--text);padding:5px 9px;outline:none;transition:border-color .15s;}
 .rmk-inp:focus{border-color:var(--accent);}
 .rmk-save{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;padding:5px 10px;border-radius:5px;border:1px solid var(--accent);background:rgba(59,130,246,.1);color:var(--accent);cursor:pointer;white-space:nowrap;}
@@ -251,7 +284,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .sig-wrap{position:relative;border-radius:7px;overflow:hidden;border:1.5px solid var(--border2);background:var(--surface);transition:border-color .15s;}
 .sig-wrap:hover{border-color:var(--accent);}
 .sig-wrap.signed{border-color:var(--in);}
-.sig-canvas{display:block;width:100%;height:80px;cursor:crosshair;touch-action:none;}
+.sig-canvas{display:block;width:100%;height:110px;cursor:crosshair;touch-action:none;}
 .sig-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;gap:6px;opacity:.4;}
 .sig-placeholder span{font-size:11px;color:var(--text-dim);letter-spacing:.04em;}
 .sig-actions{position:absolute;top:4px;right:5px;display:flex;gap:4px;}
@@ -278,8 +311,8 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .rv-sig-row{display:flex;gap:10px;padding:0 18px 14px;}
 .rv-sig-box{flex:1;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:var(--surface2);}
 .rv-sig-lbl{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;padding:6px 10px 4px;}
-.rv-sig-img{display:block;width:100%;height:60px;object-fit:contain;}
-.rv-nosig{height:60px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);font-style:italic;}
+.rv-sig-img{display:block;width:100%;height:80px;object-fit:contain;background:#fff;border-radius:0 0 6px 6px;cursor:zoom-in;}
+.rv-nosig{height:80px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);font-style:italic;}
 .rv-section-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;padding:10px 18px 6px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;}
 
 /* ── LOG ── */
@@ -287,7 +320,19 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .log-overlay.open{opacity:1;pointer-events:all;}
 .log-panel{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:580px;max-width:100%;max-height:84vh;display:flex;flex-direction:column;transform:translateY(10px);transition:transform .2s;overflow:hidden;}
 .log-overlay.open .log-panel{transform:translateY(0);}
-.all-log-panel{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:740px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;transform:translateY(10px);transition:transform .2s;overflow:hidden;}
+.log-toolbar{padding:8px 18px;border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:center;flex-wrap:wrap;flex-shrink:0;background:var(--surface2);}
+.log-date-input{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:5px 9px;outline:none;transition:border-color .15s;cursor:pointer;}
+.log-date-input:focus{border-color:var(--accent);}
+.log-toolbar-btn{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.log-toolbar-btn:hover{border-color:var(--border2);color:var(--text);}
+.log-toolbar-btn.pdf-btn{border-color:rgba(59,130,246,.4);color:var(--accent);background:rgba(59,130,246,.06);}
+.log-toolbar-btn.pdf-btn:hover{background:rgba(59,130,246,.15);}
+.log-toolbar-btn.danger-btn{border-color:rgba(239,68,68,.35);color:var(--danger);background:rgba(239,68,68,.06);}
+.log-toolbar-btn.danger-btn:hover{background:rgba(239,68,68,.15);}
+.log-date-lbl{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;flex-shrink:0;}
+.log-count-badge{font-size:10px;color:var(--text-muted);margin-left:auto;}
+#print-area{display:none;}
+.all-log-panel{background:var(--surface);border:1px solid var(--border2);border-radius:10px;width:760px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;transform:translateY(10px);transition:transform .2s;overflow:hidden;}
 .log-overlay.open .all-log-panel{transform:translateY(0);}
 .log-hdr{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;}
 .log-title{font-size:14px;font-weight:700;}
@@ -313,7 +358,13 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .hint{max-width:1400px;margin:20px auto 0;font-size:10px;color:var(--text-muted);letter-spacing:.05em;text-align:center;font-weight:500;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 .card{animation:fadeIn .18s ease;}
-/* ── KEY COUNT BTNS ── */
+/* ── SORT PILLS ── */
+.sort-pills{display:flex;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:3px;}
+.sort-pill{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:4px 11px;border-radius:5px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.sort-pill:hover{color:var(--text-dim);background:var(--surface3);}
+.sort-pill.active{background:var(--accent);color:#fff;box-shadow:0 1px 6px rgba(59,130,246,.35);}
+/* ── LOCATION CHIP (card) ── */
+.card-loc-row{display:flex;align-items:center;gap:4px;margin-top:4px;}
 .keycount-row{display:flex;align-items:center;gap:8px;}
 .keycount-btns{display:flex;gap:4px;flex-wrap:wrap;}
 .kc-btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;width:36px;height:34px;border-radius:6px;border:1.5px solid var(--border2);background:var(--surface2);color:var(--text-dim);cursor:pointer;transition:all .15s;flex-shrink:0;}
@@ -350,6 +401,12 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .cdp-done-btn:hover{opacity:.85;}
 
 @media(max-width:600px){header{flex-wrap:wrap;}.hdr-right{flex-wrap:wrap;}.stats{flex-wrap:wrap;}.stat{min-width:calc(50% - 4px);flex:none;}.fleet-grid{grid-template-columns:1fr;}}
+@media print{body>*{display:none!important;}#print-area{display:block!important;position:static!important;background:#fff!important;color:#111!important;}}
+
+/* ── SIG EXPAND OVERLAY ── */
+.sig-zoom-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;cursor:zoom-out;}
+.sig-zoom-overlay.open{opacity:1;pointer-events:all;}
+.sig-zoom-img{max-width:min(700px,90vw);max-height:80vh;border-radius:10px;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.6);object-fit:contain;}
 </style>
 </head>
 <body>
@@ -376,6 +433,14 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="10" height="12" rx="1.5"/><line x1="4.5" y1="4.5" x2="9.5" y2="4.5"/><line x1="4.5" y1="7" x2="9.5" y2="7"/><line x1="4.5" y1="9.5" x2="7" y2="9.5"/></svg>
       Records
     </button>
+    <button class="hbtn" onclick="addDummyRecords()" title="Add test data 5–10 Jun" style="border-color:rgba(167,139,250,.4);color:var(--offrun);">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5.5"/><line x1="7" y1="4" x2="7" y2="7"/><line x1="7" y1="9.5" x2="7" y2="10"/></svg>
+      Dummy Data
+    </button>
+    <button class="hbtn" onclick="confirmClearAll()" title="Clear all records" style="border-color:rgba(239,68,68,.35);color:var(--danger);">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 12,4"/><path d="M5,4V2h4v2"/><rect x="3" y="4" width="8" height="8" rx="1"/><line x1="5.5" y1="7" x2="5.5" y2="10"/><line x1="8.5" y1="7" x2="8.5" y2="10"/></svg>
+      Clear All
+    </button>
     <button class="hbtn" onclick="toggleTheme()" id="theme-btn">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" id="theme-icon"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="2.5"/><line x1="7" y1="11.5" x2="7" y2="13"/><line x1="1" y1="7" x2="2.5" y2="7"/><line x1="11.5" y1="7" x2="13" y2="7"/></svg>
       <span id="th-lbl">Light</span>
@@ -384,45 +449,55 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 </header>
 
 <div class="stats">
+  <div class="stat" id="fil-all" onclick="setFilter('all')">
+    <div class="stat-pip pip-total"></div>
+    <div><div class="stat-n n-total" id="cnt-total">0</div><div class="stat-lbl">Total Fleet</div></div>
+  </div>
   <div class="stat" id="fil-in" onclick="setFilter('in')">
     <div class="stat-pip pip-in"></div>
     <div><div class="stat-n n-in" id="cnt-in">0</div><div class="stat-lbl">In Keypress</div></div>
   </div>
   <div class="stat" id="fil-out" onclick="setFilter('out')">
     <div class="stat-pip pip-out"></div>
-    <div><div class="stat-n n-out" id="cnt-out">0</div><div class="stat-lbl">Keys Out</div></div>
+    <div><div class="stat-n n-out" id="cnt-out">0</div><div class="stat-lbl">Loaned Out</div></div>
   </div>
   <div class="stat" id="fil-offrun" onclick="setFilter('offrun')">
     <div class="stat-pip pip-offrun"></div>
     <div><div class="stat-n n-offrun" id="cnt-offrun">0</div><div class="stat-lbl">Off-Run</div></div>
   </div>
-  <div class="stat" id="fil-all" onclick="setFilter('all')">
-    <div class="stat-pip pip-total"></div>
-    <div><div class="stat-n n-total" id="cnt-total">0</div><div class="stat-lbl">Total</div></div>
+</div>
+
+<div class="midnight-banner" id="midnight-banner" style="display:none;">
+  <div style="font-size:18px;">🌙</div>
+  <div class="midnight-banner-text">
+    <div class="mb-title" id="midnight-title">⚠ Keys Not Returned Past Midnight</div>
+    <div class="mb-sub" id="midnight-sub">Keys were issued on a previous day.</div>
   </div>
 </div>
 
 <div class="bulk-banner" id="bulk-banner" style="display:none;">
   <div style="font-size:18px;">🌅</div>
   <div class="bulk-banner-text">
-    <div class="bulk-banner-title">First Parade / Bulk Issue</div>
-    <div class="bulk-banner-sub">All keys currently in keypress. Issue all at once for morning parade.</div>
+    <div class="bulk-banner-title">First Parade / Bulk Loan Out</div>
+    <div class="bulk-banner-sub">All keys in keypress. Loan out all at once for morning parade.</div>
   </div>
-  <button class="bulk-banner-btn" onclick="openBulkModal()">Issue All Keys</button>
+  <button class="bulk-banner-btn" onclick="openBulkModal()">Loan Out All</button>
 </div>
 
 <div class="toolbar">
   <div class="sec-label">Fleet Keys</div>
-  <select class="sel" id="sort-sel" onchange="setSortMode(this.value)">
-    <option value="default">Sort: Default</option>
-    <option value="status">Sort: Status</option>
-    <option value="reg">Sort: Reg No.</option>
-    <option value="type">Sort: Type</option>
-  </select>
+  <div class="sort-pills" id="sort-pills">
+    <button class="sort-pill active" data-sort="default" onclick="setSortMode('default')">Default</button>
+    <button class="sort-pill" data-sort="az" onclick="setSortMode('az')">A→Z</button>
+    <button class="sort-pill" data-sort="za" onclick="setSortMode('za')">Z→A</button>
+    <button class="sort-pill" data-sort="status" onclick="setSortMode('status')">Status</button>
+    <button class="sort-pill" data-sort="reg" onclick="setSortMode('reg')">Reg</button>
+    <button class="sort-pill" data-sort="type" onclick="setSortMode('type')">Type</button>
+  </div>
   <select class="sel" id="filter-sel" onchange="setFilterDropdown(this.value)">
     <option value="all">All</option>
     <option value="in">In Keypress</option>
-    <option value="out">Keys Out</option>
+    <option value="out">Loaned Out</option>
     <option value="offrun">Off-Run</option>
   </select>
 </div>
@@ -430,14 +505,17 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 <div class="fleet-wrap"><div class="fleet-grid" id="grid-active"></div></div>
 <div class="sec-div">Unavailable / NIL</div>
 <div class="fleet-wrap"><div class="fleet-grid" id="grid-nil"></div></div>
-<div class="hint">CLICK TOGGLE TO CHANGE STATUS · CLICK LOCATION TO EDIT · STAT CARDS FILTER · ALL DATA PERSISTS LOCALLY</div>
+<div class="hint">CLICK CARD ACTIONS TO CHANGE STATUS · CLICK LOCATION TO EDIT · STAT CARDS FILTER · ALL DATA PERSISTS LOCALLY</div>
 
 <!-- ── LOG OVERLAYS ── -->
 <div class="log-overlay" id="log-ov" onclick="if(event.target===this)closeLog()">
   <div class="log-panel">
     <div class="log-hdr">
       <div><div class="log-title" id="log-t">Record</div><div class="log-sub" id="log-s"></div></div>
-      <button class="mclose" onclick="closeLog()">Close</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="log-toolbar-btn danger-btn" id="log-clear-btn" onclick="confirmClearVehicleLog()" style="font-size:9px;padding:4px 9px;">🗑 Clear Log</button>
+        <button class="mclose" onclick="closeLog()">Close</button>
+      </div>
     </div>
     <div class="log-body" id="log-b"></div>
   </div>
@@ -447,6 +525,28 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
     <div class="log-hdr">
       <div><div class="log-title">All Keypress Records</div><div class="log-sub">Complete custody log — click a record to view full details</div></div>
       <button class="mclose" onclick="closeAllLog()">Close</button>
+    </div>
+    <div class="log-toolbar">
+      <span class="log-date-lbl">📅 Date</span>
+      <div class="custom-datepicker" id="cdp-log" style="position:relative;">
+        <button type="button" class="cdp-display" onclick="toggleDatePicker('cdp-log')" id="cdp-log-display" style="min-width:130px;">All dates…</button>
+        <div class="cdp-panel" id="cdp-log-panel" style="z-index:900;">
+          <div class="cdp-nav">
+            <button type="button" class="cdp-nav-btn" onclick="cdpPrevMonth('cdp-log')">‹</button>
+            <span class="cdp-month-lbl" id="cdp-log-lbl"></span>
+            <button type="button" class="cdp-nav-btn" onclick="cdpNextMonth('cdp-log')">›</button>
+          </div>
+          <div class="cdp-dow-row"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+          <div class="cdp-days" id="cdp-log-days"></div>
+          <div class="cdp-footer">
+            <button type="button" class="cdp-clear-btn" onclick="clearLogDatePicker()">All Dates</button>
+            <button type="button" class="cdp-done-btn" onclick="toggleDatePicker('cdp-log')">Done</button>
+          </div>
+        </div>
+      </div>
+      <button class="log-toolbar-btn pdf-btn" onclick="exportLogPDF()">⬇ Save PDF</button>
+      <button class="log-toolbar-btn danger-btn" onclick="confirmClearAllLogs()">🗑 Clear All Logs</button>
+      <span class="log-count-badge" id="alllog-count"></span>
     </div>
     <div class="log-filters" id="alllog-filters"></div>
     <div class="log-body" id="alllog-b"></div>
@@ -468,7 +568,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 <div class="overlay" id="ov-issue" onclick="if(event.target===this)closeIssue()">
   <div class="modal" style="width:520px;">
     <div class="mhdr">
-      <div><div class="mtitle" id="issue-title">Issue Keys</div><div class="msub" id="issue-sub"></div></div>
+      <div><div class="mtitle" id="issue-title">Loan Out Keys</div><div class="msub" id="issue-sub"></div></div>
       <button class="mclose" onclick="closeIssue()">Cancel</button>
     </div>
     <div class="mbody">
@@ -501,7 +601,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
         <div class="fg" style="margin-top:10px;">
           <label class="fl">Borrower Signature</label>
           <div class="sig-wrap" id="sig-wrap-borrow">
-            <canvas class="sig-canvas" id="sig-borrow" height="80"></canvas>
+            <canvas class="sig-canvas" id="sig-borrow" height="110"></canvas>
             <div class="sig-placeholder" id="sig-ph-borrow"><span>✍ Sign here</span></div>
             <div class="sig-actions"><button class="sig-clear" onclick="clearSig('sig-borrow')">Clear</button></div>
           </div>
@@ -537,7 +637,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
         <div class="fg" style="margin-top:10px;">
           <label class="fl">OPS Signature</label>
           <div class="sig-wrap" id="sig-wrap-ops-issue">
-            <canvas class="sig-canvas" id="sig-ops-issue" height="80"></canvas>
+            <canvas class="sig-canvas" id="sig-ops-issue" height="110"></canvas>
             <div class="sig-placeholder" id="sig-ph-ops-issue"><span>✍ Sign here</span></div>
             <div class="sig-actions"><button class="sig-clear" onclick="clearSig('sig-ops-issue')">Clear</button></div>
           </div>
@@ -547,7 +647,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
     </div>
     <div class="mfooter">
       <button class="bcancel" onclick="closeIssue()">Cancel</button>
-      <button class="bprimary bp-out" onclick="applyIssue()">Issue Keys →</button>
+      <button class="bprimary bp-out" onclick="applyIssue()">Loan Out →</button>
     </div>
   </div>
 </div>
@@ -571,7 +671,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
     </div>
     <div class="mfooter">
       <button class="bcancel" onclick="closeQuick()">Cancel</button>
-      <button class="bprimary bp-out" onclick="applyQuickIssue()">Keys Out →</button>
+      <button class="bprimary bp-out" onclick="applyQuickIssue()">Loan Out →</button>
     </div>
   </div>
 </div>
@@ -580,7 +680,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 <div class="overlay" id="ov-bulk" onclick="if(event.target===this)closeBulk()">
   <div class="modal" style="width:440px;">
     <div class="mhdr">
-      <div><div class="mtitle">Bulk Issue</div><div class="msub">Issues all in-keypress vehicles at once</div></div>
+      <div><div class="mtitle">Bulk Issue</div><div class="msub">Loans out all in-keypress vehicles at once</div></div>
       <button class="mclose" onclick="closeBulk()">Cancel</button>
     </div>
     <div class="mbody">
@@ -597,7 +697,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
     </div>
     <div class="mfooter">
       <button class="bcancel" onclick="closeBulk()">Cancel</button>
-      <button class="bprimary bp-out" onclick="applyBulk()">Issue All Keys →</button>
+      <button class="bprimary bp-out" onclick="applyBulk()">Loan Out All →</button>
     </div>
   </div>
 </div>
@@ -606,7 +706,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 <div class="overlay" id="ov-return" onclick="if(event.target===this)closeReturn()">
   <div class="modal" style="width:520px;">
     <div class="mhdr">
-      <div><div class="mtitle" id="return-title">Return Keys</div><div class="msub" id="return-sub"></div></div>
+      <div><div class="mtitle" id="return-title">Return to Keypress</div><div class="msub" id="return-sub"></div></div>
       <button class="mclose" onclick="closeReturn()">Cancel</button>
     </div>
     <div class="mbody">
@@ -624,7 +724,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
         <div class="fg" style="margin-top:10px;">
           <label class="fl">Returning Person Signature</label>
           <div class="sig-wrap" id="sig-wrap-ret-person">
-            <canvas class="sig-canvas" id="sig-ret-person" height="80"></canvas>
+            <canvas class="sig-canvas" id="sig-ret-person" height="110"></canvas>
             <div class="sig-placeholder" id="sig-ph-ret-person"><span>✍ Sign here</span></div>
             <div class="sig-actions"><button class="sig-clear" onclick="clearSig('sig-ret-person')">Clear</button></div>
           </div>
@@ -641,7 +741,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
         <div class="fg" style="margin-top:10px;">
           <label class="fl">OPS Receiving Signature</label>
           <div class="sig-wrap" id="sig-wrap-ret-ops">
-            <canvas class="sig-canvas" id="sig-ret-ops" height="80"></canvas>
+            <canvas class="sig-canvas" id="sig-ret-ops" height="110"></canvas>
             <div class="sig-placeholder" id="sig-ph-ret-ops"><span>✍ Sign here</span></div>
             <div class="sig-actions"><button class="sig-clear" onclick="clearSig('sig-ret-ops')">Clear</button></div>
           </div>
@@ -652,7 +752,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
     </div>
     <div class="mfooter">
       <button class="bcancel" onclick="closeReturn()">Cancel</button>
-      <button class="bprimary bp-in" onclick="applyReturn()">Keys Returned — Back to Keypress</button>
+      <button class="bprimary bp-in" onclick="applyReturn()">Return to Keypress</button>
     </div>
   </div>
 </div>
@@ -680,8 +780,9 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
   </div>
 </div>
 
+<div id="print-area"></div>
+
 <script>
-// ─── STORAGE ────────────────────────────────────────────
 const SK='ops_keypress_v3';
 function persist(){
   try{
@@ -775,7 +876,7 @@ function sw(ts){
   const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;
   return(h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0');
 }
-function statusLabel(st){return{in:'IN KEYPRESS',out:'KEYS OUT',offrun:'OFF-RUN'}[st.status]||'—';}
+function statusLabel(st){return{in:'IN KEYPRESS',out:'LOANED OUT',offrun:'OFF-RUN'}[st.status]||'—';}
 function addLog(id,toStatus,toLabel,detail='',recSnapshot=null){
   const v=vehicles.find(x=>x.id===id);
   auditLog.unshift({ts:Date.now(),id,toStatus,toLabel,vehicle:v.vehicle,reg:v.reg,detail,rec:recSnapshot});
@@ -789,7 +890,7 @@ function initSig(canvasId){
   // set actual pixel size
   const rect=canvas.getBoundingClientRect();
   canvas.width=canvas.offsetWidth*window.devicePixelRatio||canvas.offsetWidth;
-  canvas.height=80*window.devicePixelRatio||80;
+  canvas.height=110*window.devicePixelRatio||110;
   const ctx=canvas.getContext('2d');
   ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
   ctx.strokeStyle=document.documentElement.classList.contains('light')?'#1e293b':'#e2e8f0';
@@ -839,7 +940,28 @@ function clearSig(canvasId){
 function getSigDataURL(canvasId){
   const pad=sigPads[canvasId];
   if(!pad||pad.isEmpty)return null;
-  return pad.canvas.toDataURL('image/png');
+  // Copy strokes onto a transparent canvas, then remap inked pixels to dark navy.
+  // Do NOT pre-fill white — that kills alpha, making every pixel look like ink.
+  const src=pad.canvas;
+  const off=document.createElement('canvas');
+  off.width=src.width;off.height=src.height;
+  const ctx=off.getContext('2d');
+  ctx.drawImage(src,0,0);
+  const img=ctx.getImageData(0,0,off.width,off.height);
+  const d=img.data;
+  for(let i=0;i<d.length;i+=4){
+    if(d[i+3]>10){
+      d[i]=30;d[i+1]=41;d[i+2]=59;d[i+3]=255; // dark navy #1e293b
+    } else {
+      d[i]=0;d[i+1]=0;d[i+2]=0;d[i+3]=0; // fully transparent
+    }
+  }
+  ctx.putImageData(img,0,0);
+  return off.toDataURL('image/png');
+}
+function openSigZoom(src){
+  document.getElementById('sig-zoom-img').src=src;
+  document.getElementById('sig-zoom-ov').classList.add('open');
 }
 function initAllSigs(){
   ['sig-borrow','sig-ops-issue','sig-ret-person','sig-ret-ops'].forEach(id=>{
@@ -876,19 +998,50 @@ function sortedVehs(list){
   if(sortMode==='status')a.sort((x,y)=>(ord[state[x.id]?.status]??3)-(ord[state[y.id]?.status]??3));
   else if(sortMode==='reg')a.sort((x,y)=>x.reg.localeCompare(y.reg));
   else if(sortMode==='type')a.sort((x,y)=>x.vehicle.localeCompare(y.vehicle));
+  else if(sortMode==='az')a.sort((x,y)=>x.vehicle.localeCompare(y.vehicle));
+  else if(sortMode==='za')a.sort((x,y)=>y.vehicle.localeCompare(x.vehicle));
   return a;
+}
+function locEmoji(loc){
+  const u=(loc||'').toUpperCase();
+  if(u.includes('YARD'))return'🏗️';
+  if(u.includes('BASEMENT'))return'🏢';
+  if(u.includes('STN')||u.includes('STATION'))return'🚉';
+  if(u.includes('LOADING'))return'📦';
+  if(u.includes('SERVIC'))return'🔧';
+  if(u.includes('OPS'))return'🎯';
+  if(u.includes('CDA'))return'🏛️';
+  if(u.includes('WORKSHOP'))return'⚙️';
+  if(u.includes('POOL'))return'🅿️';
+  return'📍';
+}
+
+// ─── MIDNIGHT HELPER ─────────────────────────────────────
+function issuedPrevDay(ts){
+  const now=new Date();const issued=new Date(ts);
+  return issued.toDateString()!==now.toDateString();
+}
+function checkMidnightFlags(){
+  const flagged=vehicles.filter(v=>!v.nil&&state[v.id].status==='out'&&records[v.id]&&issuedPrevDay(records[v.id].issuedAt));
+  const banner=document.getElementById('midnight-banner');
+  if(flagged.length){
+    banner.style.display='flex';
+    const names=flagged.map(v=>`${v.vehicle} (Key #${v.bunchNo})`).join(', ');
+    document.getElementById('midnight-title').textContent=`⚠ ${flagged.length} Key${flagged.length>1?'s':''} Not Returned Past Midnight`;
+    document.getElementById('midnight-sub').textContent=`${names} — issued on a previous day.`;
+  } else {banner.style.display='none';}
 }
 
 // ─── RENDER ──────────────────────────────────────────────
 function renderAll(){
-  renderGrid();renderStats();
+  renderGrid();renderStats();checkMidnightFlags();
   ['in','out','offrun'].forEach(s=>{
     const el=document.getElementById('fil-'+s);
     if(el)el.className='stat'+(filterMode===s?' fil-'+s:'');
   });
   document.getElementById('fil-all').className='stat'+(filterMode==='all'?' fil-all':'');
-  document.getElementById('sort-sel').value=sortMode;
-  document.getElementById('sort-sel').classList.toggle('on',sortMode!=='default');
+  // sync sort pills
+  document.querySelectorAll('.sort-pill').forEach(b=>b.classList.toggle('active',b.dataset.sort===sortMode));
   document.getElementById('filter-sel').value=filterMode;
   document.getElementById('filter-sel').classList.toggle('on',filterMode!=='all');
   const allIn=vehicles.filter(v=>!v.nil).every(v=>state[v.id].status==='in'||state[v.id].status==='offrun');
@@ -926,55 +1079,235 @@ function buildCard(v){
   const card=document.createElement('div');
   card.className=`card k-${isNil?'nil':st.status}`;
   card.id='card-'+v.id;
+  const isMidnightFlag=!isNil&&st.status==='out'&&records[v.id]&&issuedPrevDay(records[v.id].issuedAt);
+
+  // Status display
+  let statusHtml='';
+  if(isNil){
+    statusHtml='<div class="status-badge">N/A</div>';
+  } else if(st.status==='out'){
+    statusHtml=`<div class="sw-wrap"><div class="sw-time" id="sw-${v.id}">${sw(st.since)}</div><div class="sw-lbl">Loaned Out</div></div>${isMidnightFlag?'<div class="midnight-flag">\u26a0 PAST MIDNIGHT</div>':''}`;
+  } else if(st.status==='in'){
+    statusHtml=`<div class="since-txt" id="sw-${v.id}">${elapsed(st.since)} ago</div>`;
+  } else {
+    statusHtml=`<div class="status-badge">${statusLabel(st)}</div><div class="since-txt" id="sw-${v.id}">${elapsed(st.since)} ago</div>`;
+  }
+
+  // Sub info
   let subHtml='';
   if(!isNil){
     if(st.status==='out'&&records[v.id]){
       const r=records[v.id];
-      subHtml=`<div class="card-sub out-sub">🔑 ${r.borrowerName||r.takenBy||'—'}${r.purpose?' · '+r.purpose:''}</div>`;
+      subHtml=`<div class="card-sub out-sub">\ud83d\udc64 ${r.borrowerName||r.takenBy||'\u2014'}${r.purpose?' \u00b7 '+r.purpose:''}</div>`;
     } else if(st.status==='offrun'&&st.offrunReason){
-      subHtml=`<div class="card-sub or-sub">${st.offrunReason} · Until ${st.offrunUntil?fmtD(st.offrunUntil):'TBD'}</div>`;
-    } else if(st.remarks){
-      subHtml=`<div class="card-sub">📎 ${st.remarks}</div>`;
+      subHtml=`<div class="card-sub or-sub">${st.offrunReason} \u00b7 Until ${st.offrunUntil?fmtD(st.offrunUntil):'TBD'}</div>`;
     }
   }
-  let rightHtml='';
-  if(isNil){
-    rightHtml='<div class="status-badge">N/A</div>';
-  } else if(st.status==='in'||st.status==='out'){
-    const inA=st.status==='in'?'active':'';
-    const outA=st.status==='out'?'active':'';
-    rightHtml=`<div class="key-toggle"><button class="kt-btn kt-in ${inA}" onclick="handleInToggle(${v.id})">Return</button><button class="kt-btn kt-out ${outA}" onclick="handleOutToggle(${v.id})">Issue</button></div>${st.status==='out'?`<div class="sw-wrap"><div class="sw-time" id="sw-${v.id}">${sw(st.since)}</div><div class="sw-lbl">Keys Out</div></div>`:`<div class="since-txt" id="sw-${v.id}">${elapsed(st.since)} ago</div>`}`;
-  } else {
-    rightHtml=`<div class="status-badge">${statusLabel(st)}</div><div class="since-txt" id="sw-${v.id}">${elapsed(st.since)} ago</div>`;
-  }
+
+  // Footer
   let footHtml='';
   if(!isNil){
     if(st.status==='out'){
-      footHtml=`<div class="card-foot"><button class="fbtn in-btn" onclick="openReturn(${v.id})">↩ Return Keys</button><button class="fbtn" onclick="openRecordView(${v.id})">📋 Record</button><button class="fbtn" onclick="toggleRemarks(${v.id})" style="margin-left:auto;">📝</button><button class="fbtn log-btn" onclick="openLog(${v.id})">📜</button></div>`;
+      footHtml=`<div class="card-foot"><button class="fbtn in-btn" onclick="openReturn(${v.id})">\u21a9 Return to Keypress</button><button class="fbtn" onclick="openRecordView(${v.id})">\ud83d\udccb Record</button><button class="fbtn log-btn" onclick="openLog(${v.id})">\ud83d\udcdc Log</button></div>`;
     } else if(st.status==='in'){
-      footHtml=`<div class="card-foot"><button class="fbtn out-btn" onclick="openIssue(${v.id})">Issue Keys →</button><button class="fbtn" onclick="openQuickIssue(${v.id})" title="Quick issue">⚡ Quick</button><button class="fbtn or-btn" onclick="openOffrun(${v.id})" style="margin-left:auto;">⏸ Off-Run</button><button class="fbtn log-btn" onclick="openLog(${v.id})">📜</button></div>`;
+      footHtml=`<div class="card-foot"><button class="fbtn out-btn" onclick="openIssue(${v.id})">Loan Out \u2192</button><button class="fbtn" onclick="openQuickIssue(${v.id})" title="Quick issue">\u26a1 Quick</button><button class="fbtn or-btn" onclick="openOffrun(${v.id})" style="margin-left:auto;">\u23f8 Off-Run</button><button class="fbtn log-btn" onclick="openLog(${v.id})">\ud83d\udcdc Log</button></div>`;
     } else {
-      footHtml=`<div class="card-foot"><button class="fbtn in-btn" onclick="setStatusDirect(${v.id},'in')">↩ Back to Keypress</button><button class="fbtn" onclick="toggleRemarks(${v.id})" style="margin-left:auto;">📝</button><button class="fbtn log-btn" onclick="openLog(${v.id})">📜</button></div>`;
+      footHtml=`<div class="card-foot"><button class="fbtn in-btn" onclick="setStatusDirect(${v.id},'in')">\u21a9 Back to Keypress</button><button class="fbtn log-btn" onclick="openLog(${v.id})">\ud83d\udcdc Log</button></div>`;
     }
   }
-  card.innerHTML=`<div class="card-bar"></div><div class="card-body"><div class="card-ico">${isNil?'⊘':ico(v.vehicle)}</div><div class="card-info"><div class="card-name">${v.vehicle}</div><div class="card-reg">${v.reg}</div><div class="card-loc-row"><span class="card-loc" id="loc-t-${v.id}" onclick="editLoc(${v.id})">${st.location}</span><span class="card-loc-edit" onclick="editLoc(${v.id})">✎</span><input class="loc-inp" id="loc-i-${v.id}" value="${st.location}" onblur="saveLoc(${v.id})" onkeydown="locKey(event,${v.id})"></div>${subHtml}</div><div class="card-right">${rightHtml}</div></div>${footHtml}<div class="remarks-row" id="rmk-${v.id}"><input class="rmk-inp" id="rmk-i-${v.id}" placeholder="Add remarks…" value="${(st.remarks||'').replace(/"/g,'&quot;')}" onkeydown="if(event.key==='Enter')saveRemarks(${v.id});if(event.key==='Escape')toggleRemarks(${v.id});"><button class="rmk-save" onclick="saveRemarks(${v.id})">Save</button><button class="rmk-clr" onclick="clearRemarks(${v.id})">Clear</button></div>`;
+
+  // Remarks bar
+  const rmkVal=(st.remarks||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const rmkBarHtml=!isNil?`<div class="card-remarks-bar" id="rmkbar-${v.id}">
+    <span class="rmk-text ${st.remarks?'has-rmk':''}" id="rmktxt-${v.id}">${st.remarks||'<span style="opacity:.45;font-size:10px;">No remarks</span>'}</span>
+    <input class="rmk-edit-inline" id="rmki-${v.id}" value="${rmkVal}" placeholder="Add remarks\u2026" onkeydown="if(event.key==='Enter')saveRemarksInline(${v.id});if(event.key==='Escape')cancelRemarksInline(${v.id});">
+    <button class="rmk-bar-btn" id="rmkbtn-${v.id}" onclick="toggleRemarksInline(${v.id})">\u270e Edit</button>
+    <button class="rmk-bar-btn save-rmk" id="rmksave-${v.id}" style="display:none;" onclick="saveRemarksInline(${v.id})">Save</button>
+    <button class="rmk-bar-btn clr-rmk" id="rmkclr-${v.id}" style="display:none;" onclick="clearRemarksInline(${v.id})">Clear</button>
+  </div>`:'';
+
+  // Key sidebar
+  const keyNum=isNil?'\u2014':(v.bunchNo||v.id);
+  const sidebarHtml=`<div class="card-key-sidebar"><div class="card-key-num">${keyNum}</div><div class="card-key-lbl">KEY #</div></div>`;
+
+  // Main
+  const mainHtml=`<div class="card-main"><div class="card-top-row"><div class="card-ico">${isNil?'\u2298':ico(v.vehicle)}</div><div class="card-info"><div class="card-name">${v.vehicle}</div><div class="card-reg">${v.reg}</div><div class="card-loc-row"><span class="card-loc-pin">\ud83d\udccd</span><span class="loc-chip" id="loc-t-${v.id}" onclick="editLoc(${v.id})">${st.location}</span><span class="card-loc-edit" onclick="editLoc(${v.id})">\u270e</span><input class="loc-inp" id="loc-i-${v.id}" value="${st.location}" onblur="saveLoc(${v.id})" onkeydown="locKey(event,${v.id})"></div>${subHtml}</div><div class="card-status-col">${statusHtml}</div></div></div>`;
+
+  card.innerHTML=`<div class="card-bar"></div><div class="card-body">${sidebarHtml}${mainHtml}</div>${rmkBarHtml}${footHtml}`;
   return card;
 }
-
 // ─── TOGGLES ──────────────────────────────────────────────
 function handleInToggle(id){if(state[id].status==='out')openReturn(id);else if(state[id].status==='offrun')setStatusDirect(id,'in');}
 function handleOutToggle(id){if(state[id].status==='in')openIssue(id);}
 
-// ─── REMARKS ──────────────────────────────────────────────
-function toggleRemarks(id){const el=document.getElementById('rmk-'+id);if(!el)return;const open=el.classList.toggle('open');if(open)document.getElementById('rmk-i-'+id)?.focus();}
-function saveRemarks(id){const el=document.getElementById('rmk-i-'+id);if(!el)return;state[id].remarks=el.value.trim();document.getElementById('rmk-'+id)?.classList.remove('open');renderAll();persist();}
-function clearRemarks(id){state[id].remarks='';document.getElementById('rmk-'+id)?.classList.remove('open');renderAll();persist();}
+// ─── REMARKS INLINE ───────────────────────────────────────
+function toggleRemarks(id){toggleRemarksInline(id);}// compat
+function toggleRemarksInline(id){
+  const inp=document.getElementById('rmki-'+id);
+  const txt=document.getElementById('rmktxt-'+id);
+  const editBtn=document.getElementById('rmkbtn-'+id);
+  const saveBtn=document.getElementById('rmksave-'+id);
+  const clrBtn=document.getElementById('rmkclr-'+id);
+  if(!inp)return;
+  const editing=inp.classList.contains('visible');
+  if(editing){cancelRemarksInline(id);}
+  else{
+    inp.classList.add('visible');txt.style.display='none';
+    editBtn.style.display='none';saveBtn.style.display='';clrBtn.style.display='';
+    inp.focus();inp.select();
+  }
+}
+function cancelRemarksInline(id){
+  const inp=document.getElementById('rmki-'+id);
+  const txt=document.getElementById('rmktxt-'+id);
+  const editBtn=document.getElementById('rmkbtn-'+id);
+  const saveBtn=document.getElementById('rmksave-'+id);
+  const clrBtn=document.getElementById('rmkclr-'+id);
+  if(!inp)return;
+  inp.classList.remove('visible');txt.style.display='';
+  editBtn.style.display='';saveBtn.style.display='none';clrBtn.style.display='none';
+  inp.value=(state[id].remarks||'');
+}
+function saveRemarksInline(id){
+  const inp=document.getElementById('rmki-'+id);if(!inp)return;
+  state[id].remarks=inp.value.trim();
+  cancelRemarksInline(id);renderAll();persist();
+}
+function clearRemarksInline(id){
+  state[id].remarks='';
+  const inp=document.getElementById('rmki-'+id);if(inp)inp.value='';
+  cancelRemarksInline(id);renderAll();persist();
+}
+function saveRemarks(id){saveRemarksInline(id);}
+function clearRemarks(id){clearRemarksInline(id);}
+
+// ─── CLEAR ALL ────────────────────────────────────────────
+function confirmClearAll(){
+  if(!confirm('⚠ CLEAR ALL DATA?\n\nThis will reset all vehicles to "In Keypress" and delete the entire audit log.\n\nThis cannot be undone. Continue?'))return;
+  clearAll();
+}
+function clearAll(){
+  vehicles.forEach(v=>{
+    state[v.id]={status:'in',since:Date.now(),location:v.location||state[v.id]?.location||'',remarks:'',offrunReason:'',offrunFrom:'',offrunUntil:''};
+    delete records[v.id];
+  });
+  auditLog.length=0;
+  renderAll();persist();
+  alert('All records cleared.');
+}
+function confirmClearAllLogs(){
+  if(!confirm('⚠ CLEAR ENTIRE AUDIT LOG?\n\nThis removes all log history but keeps current key states.\n\nContinue?'))return;
+  auditLog.length=0;
+  renderAllFilters();renderLogEntries([],'alllog-b',true);
+  document.getElementById('alllog-count').textContent='';
+  persist();
+}
+let logPendingVehicleId=null;
+function confirmClearVehicleLog(){
+  const id=logPendingVehicleId;if(!id)return;
+  const v=vehicles.find(x=>x.id===id);
+  if(!confirm(`Clear all log entries for ${v.vehicle} (${v.reg})?\n\nCannot be undone.`))return;
+  const toRemove=auditLog.filter(e=>e.id===id);
+  toRemove.forEach(e=>{const i=auditLog.indexOf(e);if(i>-1)auditLog.splice(i,1);});
+  renderLogEntries([],'log-b');
+  document.getElementById('log-s').textContent='Log cleared.';
+  persist();
+}
+
+// ─── DUMMY DATA ───────────────────────────────────────────
+function addDummyRecords(){
+  if(!confirm('Add dummy records for 5 Jun – 10 Jun 2026 for testing?\n\nThis will add historical log entries without changing current vehicle states.'))return;
+  const dummy=[
+    {id:1,day:5,h:8,m:10,action:'out',borrower:'SGT TAN WEI LIANG',unit:'OPS',purpose:'1st Parade',keys:2,opsName:'CPL AHMAD FIRDAUS'},
+    {id:1,day:5,h:17,m:30,action:'in',returner:'SGT TAN WEI LIANG',opsName:'CPL AHMAD FIRDAUS',condition:'Good',keys:2},
+    {id:2,day:5,h:8,m:15,action:'out',borrower:'CPL LIAO JUN HAO',unit:'MT SECTION',purpose:'Servicing run',keys:1,opsName:'CPL AHMAD FIRDAUS'},
+    {id:2,day:5,h:13,m:0,action:'in',returner:'CPL LIAO JUN HAO',opsName:'CPL AHMAD FIRDAUS',condition:'Good',keys:1},
+    {id:4,day:6,h:7,m:45,action:'out',borrower:'LTA CHEN MING',unit:'OPS',purpose:'Exercise SWIFT',keys:3,opsName:'SGT RAHMAN'},
+    {id:4,day:6,h:23,m:55,action:'in',returner:'LTA CHEN MING',opsName:'SGT RAHMAN',condition:'Good',keys:3},
+    {id:5,day:7,h:6,m:0,action:'out',borrower:'2LT YUSOF BIN ALI',unit:'3 SIR',purpose:'Night exercise',keys:2,opsName:'CPL AHMAD FIRDAUS'},
+    {id:5,day:8,h:3,m:20,action:'in',returner:'2LT YUSOF BIN ALI',opsName:'CPL AHMAD FIRDAUS',condition:'Good',keys:2},
+    {id:7,day:7,h:8,m:0,action:'out',borrower:'SGT PETER LOW',unit:'LOG',purpose:'Supply run',keys:1,opsName:'CPL GOMEZ'},
+    {id:7,day:7,h:16,m:45,action:'in',returner:'SGT PETER LOW',opsName:'CPL GOMEZ',condition:'Good',keys:1},
+    {id:9,day:8,h:7,m:30,action:'out',borrower:'CPL HASSAN',unit:'OPS',purpose:'Morning parade run',keys:2,opsName:'SGT RAHMAN'},
+    {id:9,day:8,h:12,m:0,action:'in',returner:'CPL HASSAN',opsName:'SGT RAHMAN',condition:'Good',keys:2},
+    {id:3,day:9,h:8,m:0,action:'out',borrower:'ME2 TAN BOON HENG',unit:'OPS',purpose:'1st Parade',keys:1,opsName:'CPL AHMAD FIRDAUS'},
+    {id:3,day:9,h:18,m:10,action:'in',returner:'ME2 TAN BOON HENG',opsName:'CPL AHMAD FIRDAUS',condition:'Good',keys:1},
+    {id:10,day:9,h:9,m:15,action:'out',borrower:'CPL LIANG JIN',unit:'QM',purpose:'Resupply task',keys:2,opsName:'CPL AHMAD FIRDAUS'},
+    {id:10,day:9,h:14,m:30,action:'in',returner:'CPL LIANG JIN',opsName:'CPL AHMAD FIRDAUS',condition:'Good',keys:2},
+    {id:13,day:10,h:7,m:55,action:'out',borrower:'SGT FARHAN',unit:'OPS',purpose:'1st Parade',keys:2,opsName:'SGT RAHMAN'},
+    {id:13,day:10,h:17,m:0,action:'in',returner:'SGT FARHAN',opsName:'SGT RAHMAN',condition:'Good',keys:2},
+    {id:6,day:10,h:8,m:20,action:'out',borrower:'CPL WONG YEW KHENG',unit:'MT',purpose:'Vehicle wash bay',keys:1,opsName:'CPL GOMEZ'},
+    {id:6,day:10,h:11,m:30,action:'in',returner:'CPL WONG YEW KHENG',opsName:'CPL GOMEZ',condition:'Good',keys:1},
+  ];
+  dummy.forEach(d=>{
+    const v=vehicles.find(x=>x.id===d.id);if(!v)return;
+    const ts=new Date(2026,5,d.day,d.h,d.m,0).getTime(); // June=month 5
+    if(d.action==='out'){
+      const rec={type:'full',issuedAt:ts,bunchNo:v.bunchNo,keyCount:String(d.keys),purpose:d.purpose,borrowerName:d.borrower,borrowerUnit:d.unit,opsName:d.opsName,borrowerSig:null,opsSig:null,expectedReturn:''};
+      auditLog.push({ts,id:v.id,toStatus:'out',toLabel:`LOANED OUT → ${d.borrower}`,vehicle:v.vehicle,reg:v.reg,detail:`Keys: ${d.keys} · ${d.purpose}`,rec:JSON.parse(JSON.stringify(rec))});
+    } else {
+      const fullSnap={type:'return',issuedAt:ts-3600000,borrowerName:d.returner,returnedAt:ts,returnPersonName:d.returner,returnOpsName:d.opsName,returnKeyCount:String(d.keys),condition:d.condition||'Good',isReturn:true};
+      auditLog.push({ts,id:v.id,toStatus:'in',toLabel:`RETURNED TO KEYPRESS by ${d.returner}`,vehicle:v.vehicle,reg:v.reg,detail:`Keys: ${d.keys} · Condition: ${d.condition} · OPS: ${d.opsName}`,rec:fullSnap});
+    }
+  });
+  auditLog.sort((a,b)=>b.ts-a.ts);
+  persist();
+  alert(`Added ${dummy.length} dummy log entries for 5–10 Jun 2026.`);
+}
+
+// ─── LOG DATE FILTER ──────────────────────────────────────
+let allLogDateFilter='';
+function applyLogDateFilter(){
+  allLogDateFilter=document.getElementById('alllog-date-filter')?.value||'';
+  refreshAllLog();
+}
+function clearLogDateFilter(){
+  allLogDateFilter='';
+  // clear the cdp-log picker state
+  if(cdpState['cdp-log']){cdpState['cdp-log'].sel1=null;cdpState['cdp-log'].sel2=null;cdpRender('cdp-log');}
+  const btn=document.getElementById('cdp-log-display');
+  if(btn){btn.textContent='All dates…';btn.classList.remove('has-value');}
+  refreshAllLog();
+}
+function clearLogDatePicker(){clearLogDateFilter();}
+function refreshAllLog(){
+  let entries=allFilter==='all'?[...auditLog]:auditLog.filter(e=>String(e.id)===allFilter);
+  if(allLogDateFilter){
+    const sel=new Date(allLogDateFilter+'T00:00:00');
+    entries=entries.filter(e=>{const d=new Date(e.ts);return d.getFullYear()===sel.getFullYear()&&d.getMonth()===sel.getMonth()&&d.getDate()===sel.getDate();});
+  }
+  const cnt=document.getElementById('alllog-count');
+  if(cnt)cnt.textContent=entries.length?`${entries.length} entr${entries.length===1?'y':'ies'}`:'';
+  renderLogEntries(entries,'alllog-b',true);
+}
+function exportLogPDF(){
+  let entries=allFilter==='all'?[...auditLog]:auditLog.filter(e=>String(e.id)===allFilter);
+  if(allLogDateFilter){
+    const sel=new Date(allLogDateFilter+'T00:00:00');
+    entries=entries.filter(e=>{const d=new Date(e.ts);return d.getFullYear()===sel.getFullYear()&&d.getMonth()===sel.getMonth()&&d.getDate()===sel.getDate();});
+  }
+  const dateLbl=allLogDateFilter?new Date(allLogDateFilter+'T00:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}):'All Dates';
+  const vehLbl=allFilter==='all'?'All Vehicles':(()=>{const v=vehicles.find(x=>String(x.id)===allFilter);return v?v.vehicle+' · '+v.reg:'';})();
+  const col={in:'#22c55e',out:'#f97316',offrun:'#a78bfa'};
+  const rows=entries.map(e=>`<tr><td style="white-space:nowrap;font-family:monospace;font-size:11px;padding:5px 8px;border-bottom:1px solid #e5e7eb;">${fmtDT(e.ts)}</td><td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;font-weight:700;color:${col[e.toStatus]||'#374151'};font-size:11px;">${e.vehicle}</td><td style="font-family:monospace;font-size:10px;padding:5px 8px;border-bottom:1px solid #e5e7eb;">${e.reg}</td><td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;font-size:11px;">${e.toLabel}</td><td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;font-size:10px;color:#6b7280;">${e.detail||''}</td></tr>`).join('');
+  const pa=document.getElementById('print-area');
+  pa.innerHTML=`<div style="font-family:Inter,Arial,sans-serif;padding:24px;color:#111;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;border-bottom:2px solid #111;padding-bottom:12px;">
+      <div><div style="font-size:20px;font-weight:800;letter-spacing:.04em;">OPS KEYPRESS RECORD</div><div style="font-size:12px;color:#555;margin-top:4px;">Vehicle Key Custody Log</div></div>
+      <div style="text-align:right;"><div style="font-size:12px;font-weight:700;">${dateLbl}</div><div style="font-size:11px;color:#555;margin-top:2px;">${vehLbl}</div><div style="font-size:10px;color:#999;margin-top:4px;">Printed: ${fmtDT(Date.now())}</div></div>
+    </div>
+    ${entries.length?`<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f3f4f6;">${['Date/Time','Vehicle','Reg','Action','Details'].map(h=>`<th style="padding:6px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:2px solid #d1d5db;">${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`:'<div style="padding:20px;text-align:center;color:#9ca3af;">No records for this selection.</div>'}
+    <div style="margin-top:24px;border-top:1px solid #e5e7eb;padding-top:12px;font-size:10px;color:#9ca3af;">Total entries: ${entries.length} · Generated by OPS Keypress Record System</div>
+  </div>`;
+  pa.style.display='block';
+  setTimeout(()=>{window.print();pa.style.display='none';pa.innerHTML='';},100);
+}
 
 // ─── ISSUE KEYS ───────────────────────────────────────────
 function openIssue(id){
   pendingId=id;
   const v=vehicles.find(x=>x.id===id);
-  document.getElementById('issue-title').textContent='Issue Keys — '+v.vehicle;
+  document.getElementById('issue-title').textContent='Loan Out — '+v.vehicle;
   document.getElementById('issue-sub').textContent=v.reg;
   ['i-keycount','i-purpose','i-bname','i-bunit','i-ops-name'].forEach(f=>{const e=document.getElementById(f);if(e)e.value='';});
   document.getElementById('i-return-dt').value='';
@@ -1005,7 +1338,7 @@ function applyIssue(){
   };
   records[id]=rec;
   state[id].status='out';state[id].since=Date.now();
-  addLog(id,'out',`KEYS OUT → ${bname}`,`Keys: ${rec.keyCount||'?'}${rec.purpose?' · '+rec.purpose:''}`,JSON.parse(JSON.stringify(rec)));
+  addLog(id,'out',`LOANED OUT → ${bname}`,`Keys: ${rec.keyCount||'?'}${rec.purpose?' · '+rec.purpose:''}`,JSON.parse(JSON.stringify(rec)));
   closeIssue();renderAll();persist();
 }
 
@@ -1025,7 +1358,7 @@ function applyQuickIssue(){
   if(!name){alert('Name required.');return;}
   const rec={type:'quick',issuedAt:Date.now(),takenBy:name,borrowerName:name,purpose:document.getElementById('q-purpose').value.trim(),remarks:document.getElementById('q-remarks').value.trim()};
   records[id]=rec;state[id].status='out';state[id].since=Date.now();
-  addLog(id,'out',`KEYS OUT (QUICK) → ${name}`,rec.purpose||'Informal issue',JSON.parse(JSON.stringify(rec)));
+  addLog(id,'out',`LOANED OUT (QUICK) → ${name}`,rec.purpose||'Informal issue',JSON.parse(JSON.stringify(rec)));
   closeQuick();renderAll();persist();
 }
 
@@ -1041,7 +1374,7 @@ function applyBulk(){
   vehicles.filter(v=>!v.nil&&state[v.id].status==='in').forEach(v=>{
     const rec={type:'bulk',issuedAt:Date.now(),doName,purpose,opsName:ops,remarks,borrowerName:'(Bulk — '+purpose+')'};
     records[v.id]=rec;state[v.id].status='out';state[v.id].since=Date.now();
-    addLog(v.id,'out','KEYS OUT (BULK)',`${purpose}${doName?' · DO: '+doName:''}`,JSON.parse(JSON.stringify(rec)));
+    addLog(v.id,'out','LOANED OUT (BULK)',`${purpose}${doName?' · DO: '+doName:''}`,JSON.parse(JSON.stringify(rec)));
   });
   closeBulk();renderAll();persist();
 }
@@ -1050,12 +1383,12 @@ function applyBulk(){
 function openReturn(id){
   pendingId=id;
   const v=vehicles.find(x=>x.id===id);
-  document.getElementById('return-title').textContent='Return Keys — '+v.vehicle;
+  document.getElementById('return-title').textContent='Return to Keypress — '+v.vehicle;
   document.getElementById('return-sub').textContent=v.reg;
   const r=records[id];
   const sumEl=document.getElementById('return-summary');
   if(r){
-    sumEl.innerHTML=`<div class="fsec-block sec-ret"><div class="fsec-title ret-t"><span class="sec-icon">🔑</span>Keys Currently Out</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div><div style="font-size:11px;color:var(--text-dim);">Issued: ${fmtDT(r.issuedAt)}</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Borrower: <b style="color:var(--text)">${r.borrowerName||r.takenBy||'—'}</b>${r.purpose?' · '+r.purpose:''}</div>${r.bunchNo?`<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Bunch: <span style="font-family:IBM Plex Mono,monospace;color:var(--key-col)">${r.bunchNo}</span> · Keys: ${r.keyCount||'?'}</div>`:''}</div><div style="text-align:right;"><div class="sw-time" id="retsw-${id}" style="font-size:18px;">${sw(r.issuedAt)}</div><div style="font-size:8px;color:var(--out);text-transform:uppercase;letter-spacing:.08em;">Keys Out Duration</div></div></div></div>`;
+    sumEl.innerHTML=`<div class="fsec-block sec-ret"><div class="fsec-title ret-t"><span class="sec-icon">🔑</span>Currently Loaned Out</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div><div style="font-size:11px;color:var(--text-dim);">Issued: ${fmtDT(r.issuedAt)}</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Borrower: <b style="color:var(--text)">${r.borrowerName||r.takenBy||'—'}</b>${r.purpose?' · '+r.purpose:''}</div>${r.bunchNo?`<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Bunch: <span style="font-family:IBM Plex Mono,monospace;color:var(--key-col)">${r.bunchNo}</span> · Keys: ${r.keyCount||'?'}</div>`:''}</div><div style="text-align:right;"><div class="sw-time" id="retsw-${id}" style="font-size:18px;">${sw(r.issuedAt)}</div><div style="font-size:8px;color:var(--out);text-transform:uppercase;letter-spacing:.08em;">Loaned Out Duration</div></div></div></div>`;
   } else sumEl.innerHTML='';
   ['r-name','r-ops-name','r-remarks'].forEach(f=>{const e=document.getElementById(f);if(e)e.value='';});
   if(r&&r.keyCount)document.getElementById('r-keycount').value=r.keyCount;else document.getElementById('r-keycount').value='';
@@ -1069,8 +1402,9 @@ function applyReturn(){
   const rname=document.getElementById('r-name').value.trim();
   if(!rname){alert('Returning person name required.');return;}
   const issueRec=records[id]?JSON.parse(JSON.stringify(records[id])):null;
+  const returnedAt=Date.now();
   const returnRec={
-    returnedAt:Date.now(),
+    returnedAt,
     returnPersonName:rname,
     returnPersonSig:getSigDataURL('sig-ret-person'),
     returnOpsName:document.getElementById('r-ops-name').value.trim(),
@@ -1080,7 +1414,20 @@ function applyReturn(){
     returnRemarks:document.getElementById('r-remarks').value.trim(),
   };
   const fullSnap=issueRec?{...issueRec,...returnRec,isReturn:true}:{...returnRec,isReturn:true};
-  addLog(id,'in',`KEYS RETURNED by ${rname}`,`Keys: ${returnRec.returnKeyCount||'?'} · Condition: ${returnRec.condition} · OPS: ${returnRec.returnOpsName||'—'}`,fullSnap);
+  // Check if this was a cross-midnight issue
+  const crossMidnight=issueRec&&issuedPrevDay(issueRec.issuedAt);
+  const returnDateStr=new Date(returnedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const baseDetail=`Keys: ${returnRec.returnKeyCount||'?'} · Condition: ${returnRec.condition} · OPS: ${returnRec.returnOpsName||'—'}`;
+  const returnDetail=crossMidnight?`${baseDetail} · Returned: ${returnDateStr}`:baseDetail;
+  addLog(id,'in',`RETURNED TO KEYPRESS by ${rname}`,returnDetail,fullSnap);
+  // Back-fill the original issue log entry with the return date
+  if(crossMidnight&&issueRec){
+    const issueEntry=auditLog.find(e=>e.id===id&&e.toStatus==='out'&&e.ts===issueRec.issuedAt);
+    if(issueEntry&&!issueEntry.returnedOn){
+      issueEntry.returnedOn=returnDateStr;
+      issueEntry.detail=(issueEntry.detail||'')+` · Returned: ${returnDateStr}`;
+    }
+  }
   delete records[id];
   state[id].status='in';state[id].since=Date.now();
   closeReturn();renderAll();persist();
@@ -1105,12 +1452,12 @@ function closeRecord(){document.getElementById('ov-record').classList.remove('op
 function buildRecordView(r,id,live){
   const body=document.getElementById('rv-body');
   if(!r){body.innerHTML='<div style="padding:20px;color:var(--text-muted);font-size:12px;">No active issue record.</div>';return;}
-  const dur=`<div class="sw-time k-out" id="rv-sw-${id}">${sw(r.issuedAt)}</div><div class="rv-sw-lbl">Keys Out Duration</div>`;
+  const dur=`<div class="sw-time k-out" id="rv-sw-${id}">${sw(r.issuedAt)}</div><div class="rv-sw-lbl">Loaned Out Duration</div>`;
   body.innerHTML=buildIssueRecordHTML(r,dur);
 }
 function buildRecordViewFromSnap(snap){
   const body=document.getElementById('rv-body');
-  const dur=snap.issuedAt?`<div class="sw-time" style="color:var(--text-dim)">${sw(snap.issuedAt)}</div><div class="rv-sw-lbl">Was out for this duration</div>`:'';
+  const dur=snap.issuedAt?`<div class="sw-time" style="color:var(--text-dim)">${sw(snap.issuedAt)}</div><div class="rv-sw-lbl">Was loaned out for</div>`:'';
   let html=buildIssueRecordHTML(snap,dur);
   if(snap.isReturn){
     html+=`<div class="rv-section-head" style="color:var(--in);">↩ Return Details</div><div class="rv-grid" style="padding-top:0;">
@@ -1122,8 +1469,8 @@ function buildRecordViewFromSnap(snap){
       <div class="rv-item"><div class="rv-item-lbl">Remarks</div><div class="rv-item-val">${snap.returnRemarks||'—'}</div></div>
     </div>
     <div class="rv-sig-row">
-      <div class="rv-sig-box"><div class="rv-sig-lbl">Returning Person Sig</div>${snap.returnPersonSig?`<img class="rv-sig-img" src="${snap.returnPersonSig}">`:'<div class="rv-nosig">No signature</div>'}</div>
-      <div class="rv-sig-box"><div class="rv-sig-lbl">OPS Receiving Sig</div>${snap.returnOpsSig?`<img class="rv-sig-img" src="${snap.returnOpsSig}">`:'<div class="rv-nosig">No signature</div>'}</div>
+      <div class="rv-sig-box"><div class="rv-sig-lbl">Returning Person Sig</div>${snap.returnPersonSig?`<img class="rv-sig-img" src="${snap.returnPersonSig}" onclick="openSigZoom(this.src)">`:'<div class="rv-nosig">No signature</div>'}</div>
+      <div class="rv-sig-box"><div class="rv-sig-lbl">OPS Receiving Sig</div>${snap.returnOpsSig?`<img class="rv-sig-img" src="${snap.returnOpsSig}" onclick="openSigZoom(this.src)">`:'<div class="rv-nosig">No signature</div>'}</div>
     </div>`;
   }
   body.innerHTML=html;
@@ -1144,8 +1491,8 @@ function buildIssueRecordHTML(r,durHtml){
     ${r.expectedReturn?`<div class="rv-item"><div class="rv-item-lbl">Expected Return</div><div class="rv-item-val">${fmtDT(new Date(r.expectedReturn).getTime())}</div></div>`:''}
   </div>
   <div class="rv-sig-row">
-    <div class="rv-sig-box"><div class="rv-sig-lbl">Borrower Signature</div>${r.borrowerSig?`<img class="rv-sig-img" src="${r.borrowerSig}" style="background:#fff;">`:'<div class="rv-nosig">No signature captured</div>'}</div>
-    <div class="rv-sig-box"><div class="rv-sig-lbl">OPS Issuing Signature</div>${r.opsSig?`<img class="rv-sig-img" src="${r.opsSig}" style="background:#fff;">`:'<div class="rv-nosig">No signature captured</div>'}</div>
+    <div class="rv-sig-box"><div class="rv-sig-lbl">Borrower Signature</div>${r.borrowerSig?`<img class="rv-sig-img" src="${r.borrowerSig}" onclick="openSigZoom(this.src)">`:'<div class="rv-nosig">No signature captured</div>'}</div>
+    <div class="rv-sig-box"><div class="rv-sig-lbl">OPS Issuing Signature</div>${r.opsSig?`<img class="rv-sig-img" src="${r.opsSig}" onclick="openSigZoom(this.src)">`:'<div class="rv-nosig">No signature captured</div>'}</div>
   </div>`;
 }
 
@@ -1175,27 +1522,47 @@ function applyOffrun(){
 
 // ─── LOC EDIT ─────────────────────────────────────────────
 function editLoc(id){document.getElementById('loc-t-'+id).style.display='none';const i=document.getElementById('loc-i-'+id);i.style.display='inline-block';i.focus();i.select();}
-function saveLoc(id){const t=document.getElementById('loc-t-'+id),i=document.getElementById('loc-i-'+id);if(!t||!i)return;const v=i.value.trim()||state[id].location;state[id].location=v;vehicles.find(x=>x.id===id).location=v;t.textContent=v;t.style.display='';i.style.display='none';persist();}
+function saveLoc(id){
+  const t=document.getElementById('loc-t-'+id),i=document.getElementById('loc-i-'+id);
+  if(!t||!i)return;
+  const v=i.value.trim()||state[id].location;
+  state[id].location=v;vehicles.find(x=>x.id===id).location=v;
+  t.innerHTML=`<span class="loc-chip-icon">${locEmoji(v)}</span>${v}`;
+  t.style.display='';i.style.display='none';persist();
+}
 function locKey(e,id){if(e.key==='Enter')saveLoc(id);if(e.key==='Escape'){document.getElementById('loc-t-'+id).style.display='';document.getElementById('loc-i-'+id).style.display='none';}}
 
 // ─── LOGS ─────────────────────────────────────────────────
 function openLog(id){
+  logPendingVehicleId=id;
   const v=vehicles.find(x=>x.id===id);
   document.getElementById('log-t').textContent=v.vehicle+' — '+v.reg;
   document.getElementById('log-s').textContent='Individual custody log';
   renderLogEntries(auditLog.filter(e=>e.id===id),'log-b');
   document.getElementById('log-ov').classList.add('open');
 }
-function closeLog(){document.getElementById('log-ov').classList.remove('open');}
+function closeLog(){document.getElementById('log-ov').classList.remove('open');logPendingVehicleId=null;}
 let allFilter='all';
-function openAllLogs(){allFilter='all';renderAllFilters();renderLogEntries(auditLog,'alllog-b',true);document.getElementById('alllog-ov').classList.add('open');}
+function openAllLogs(){
+  allFilter='all';allLogDateFilter='';
+  if(!cdpState['cdp-log'])cdpInit('cdp-log');
+  // reset log picker display
+  cdpState['cdp-log'].sel1=null;cdpState['cdp-log'].sel2=null;
+  const now=new Date();cdpState['cdp-log'].year=now.getFullYear();cdpState['cdp-log'].month=now.getMonth();
+  cdpRender('cdp-log');
+  const btn=document.getElementById('cdp-log-display');
+  if(btn){btn.textContent='All dates…';btn.classList.remove('has-value');}
+  renderAllFilters();
+  refreshAllLog();
+  document.getElementById('alllog-ov').classList.add('open');
+}
 function closeAllLog(){document.getElementById('alllog-ov').classList.remove('open');}
 function renderAllFilters(){
   const used=[...new Set(auditLog.map(e=>e.id))];
   const row=document.getElementById('alllog-filters');row.innerHTML='';
-  const mk=(key,label)=>{const b=document.createElement('button');b.className='lf-btn'+(allFilter===key?' active':'');b.textContent=label;b.onclick=()=>{allFilter=key;renderAllFilters();renderLogEntries(key==='all'?auditLog:auditLog.filter(e=>String(e.id)===key),'alllog-b',true);};row.appendChild(b);};
+  const mk=(key,label)=>{const b=document.createElement('button');b.className='lf-btn'+(allFilter===key?' active':'');b.textContent=label;b.onclick=()=>{allFilter=key;renderAllFilters();refreshAllLog();};row.appendChild(b);};
   mk('all','All');
-  vehicles.filter(v=>!v.nil&&used.includes(v.id)).forEach(v=>mk(String(v.id),v.reg));
+  vehicles.filter(v=>!v.nil&&used.includes(v.id)).forEach(v=>mk(String(v.id),v.vehicle+' · '+v.reg));
 }
 function renderLogEntries(entries,bid,showVeh=false){
   const body=document.getElementById(bid);
@@ -1285,26 +1652,38 @@ function resetDatePicker(id){
 function cdpSelectDay(id,year,month,day){
   const s=cdpState[id];
   const clicked=new Date(year,month,day);
+  let justCompleted=false;
   if(!s.sel1||(s.sel1&&s.sel2)){
     s.sel1=clicked;s.sel2=null;
   } else {
     if(clicked<s.sel1){s.sel2=s.sel1;s.sel1=clicked;}
     else if(clicked.getTime()===s.sel1.getTime()){s.sel2=null;}
-    else {s.sel2=clicked;}
+    else {s.sel2=clicked;justCompleted=true;}
   }
-  // update hidden input
+  // update hidden input (for issue date picker only)
   const hid=document.getElementById('i-return-dt');
   const btn=document.getElementById(id+'-display');
   if(s.sel1&&s.sel2){
-    hid.value=fmtDLocal(s.sel1)+'|'+fmtDLocal(s.sel2);
-    btn.textContent=fmtDShort(s.sel1)+' → '+fmtDShort(s.sel2);
-    btn.classList.add('has-value');
+    if(hid)hid.value=fmtDLocal(s.sel1)+'|'+fmtDLocal(s.sel2);
+    if(btn){btn.textContent=fmtDShort(s.sel1)+' → '+fmtDShort(s.sel2);btn.classList.add('has-value');}
+    // Range complete: auto-close only the log picker (not issue — user clicks Done)
+    if(justCompleted&&id==='cdp-log'){
+      document.getElementById(id+'-panel').classList.remove('open');
+    }
   } else if(s.sel1){
-    hid.value=fmtDLocal(s.sel1);
-    btn.textContent=fmtDShort(s.sel1);
-    btn.classList.add('has-value');
+    if(hid)hid.value=fmtDLocal(s.sel1);
+    if(btn){btn.textContent=fmtDShort(s.sel1)+'  (pick end…)';btn.classList.add('has-value');}
+    // keep open — waiting for 2nd date
   } else {
-    hid.value='';btn.textContent='Select date…';btn.classList.remove('has-value');
+    if(hid)hid.value='';
+    if(btn){btn.textContent='Select date…';btn.classList.remove('has-value');}
+  }
+  // for log date picker: single date, close on select
+  if(id==='cdp-log'&&s.sel1){
+    if(btn){btn.textContent=fmtDShort(s.sel1);btn.classList.add('has-value');}
+    allLogDateFilter=fmtDLocal(s.sel1);
+    refreshAllLog();
+    document.getElementById(id+'-panel').classList.remove('open');
   }
   cdpRender(id);
 }
@@ -1326,7 +1705,7 @@ function cdpRender(id){
     const isPast=dt<today;
     const isToday=dt.getTime()===today.getTime();
     let cls='cdp-day';
-    if(isPast)cls+=' cdp-past';
+    if(isPast&&id!=='cdp-log')cls+=' cdp-past';
     if(isToday)cls+=' cdp-today';
     if(s.sel1&&s.sel2){
       if(dt.getTime()===s.sel1.getTime())cls+=' cdp-sel1';
@@ -1335,7 +1714,7 @@ function cdpRender(id){
     } else if(s.sel1&&dt.getTime()===s.sel1.getTime()){
       cls+=' cdp-sel-same';
     }
-    const clickable=!isPast||isToday;
+    const clickable=(!isPast||isToday)||(id==='cdp-log');
     html+=`<button class="${cls}" ${clickable?`onclick="cdpSelectDay('${id}',${s.year},${s.month},${d})"`:''} >${d}</button>`;
   }
   el.innerHTML=html;
@@ -1351,5 +1730,10 @@ document.addEventListener('click',e=>{
 renderAll();tick();setInterval(tick,1000);
 initAllSigs();
 </script>
+
+<!-- ── SIG ZOOM OVERLAY ── -->
+<div class="sig-zoom-overlay" id="sig-zoom-ov" onclick="this.classList.remove('open')">
+  <img class="sig-zoom-img" id="sig-zoom-img" src="" alt="Signature">
+</div>
 </body>
 </html>
