@@ -125,14 +125,14 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 
 /* ── LAYOUT ── */
 .fleet-wrap{max-width:1400px;margin:0 auto;}
-.fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:10px;}
+.fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:10px;align-items:stretch;}
 .fleet-grid.row-view{grid-template-columns:1fr;}
 .card-hidden{display:none!important;}
 .sec-div{max-width:1400px;margin:18px auto 10px;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;display:flex;align-items:center;gap:8px;}
 .sec-div::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* ── CARD — always bordered and rounded ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;position:relative;overflow:hidden;transition:border-color .15s,background .15s;user-select:none;-webkit-tap-highlight-color:transparent;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;position:relative;overflow:hidden;transition:border-color .15s,background .15s;user-select:none;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;}
 :root.light .card{box-shadow:0 1px 6px rgba(0,0,0,.08);}
 .card.k-nil{opacity:.4;}
 .card.k-in{border-color:rgba(74,222,128,.18);}
@@ -150,7 +150,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .card.k-nil .card-bar{background:var(--nil);}
 .card:active{background:var(--surface2);}
 /* Card layout */
-.card-body{padding:0;display:flex;align-items:stretch;}
+.card-body{padding:0;display:flex;align-items:stretch;flex:1;}
 .card-key-sidebar{width:44px;flex-shrink:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 0 10px;border-right:1px solid var(--border);background:transparent;}
 .card.k-in .card-key-sidebar{background:rgba(74,222,128,.05);}
 .card.k-out .card-key-sidebar{background:rgba(251,146,60,.05);}
@@ -160,8 +160,8 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .card.k-in .card-key-num{color:var(--in);}
 .card.k-out .card-key-num{color:var(--out);}
 .card.k-offrun .card-key-num{color:var(--offrun);}
-.card-main{flex:1;min-width:0;padding:11px 12px 10px 13px;display:flex;flex-direction:column;gap:4px;}
-.card-top-row{display:flex;align-items:flex-start;gap:9px;}
+.card-main{flex:1;min-width:0;padding:11px 12px 10px 13px;display:flex;flex-direction:column;}
+.card-top-row{display:flex;align-items:flex-start;gap:9px;min-height:64px;}
 .card-ico{width:36px;height:36px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--surface2);}
 .card.k-in .card-ico{background:rgba(74,222,128,.1);box-shadow:0 0 0 1px rgba(74,222,128,.15);}
 .card.k-out .card-ico{background:rgba(251,146,60,.1);box-shadow:0 0 0 1px rgba(251,146,60,.15);}
@@ -171,10 +171,10 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .card-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em;line-height:1.2;color:var(--text);}
 .card-reg{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.09em;margin-top:1px;color:var(--text-dim);}
 .card-bunch-badge{display:none;}
-/* Status column */
-.card-status-col{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:3px;padding-top:1px;}
+/* Status column — fixed width so cards don't shift */
+.card-status-col{flex-shrink:0;width:100px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:3px;padding-top:1px;}
 /* Location row */
-.card-loc-row{display:flex;align-items:center;gap:4px;margin-top:2px;}
+.card-loc-row{display:flex;align-items:center;gap:4px;margin-top:4px;}
 .card-loc-pin{font-size:10px;line-height:1;opacity:.6;}
 .card-loc-label{display:none;}
 .loc-inp{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:2px 6px;outline:none;width:120px;display:none;}
@@ -184,9 +184,11 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .loc-chip-icon{display:none;}
 .card-loc-edit{font-size:9px;color:var(--text-muted);opacity:0;cursor:pointer;transition:opacity .15s;margin-left:2px;}
 .card-loc-row:hover .card-loc-edit{opacity:1;}
-.card-sub{font-size:10px;color:var(--text-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-sub{font-size:10px;color:var(--text-dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card-sub.out-sub{color:var(--out);font-weight:500;}
 .card-sub.or-sub{color:var(--offrun);}
+/* Spacer pushes footer to bottom */
+.card-spacer{flex:1;}
 /* Midnight */
 .midnight-banner{max-width:1400px;margin:0 auto 12px;background:linear-gradient(135deg,rgba(224,82,82,.1),transparent);border:1px solid rgba(224,82,82,.35);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;}
 
@@ -212,7 +214,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .midnight-flag{border-radius:4px;padding:2px 6px;font-size:8px;font-weight:700;color:var(--danger);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;}
 @keyframes pulseDanger{0%,100%{opacity:1}50%{opacity:.4}}
 /* Remarks bar */
-.card-remarks-bar{border-top:1px solid var(--border);padding:5px 12px 5px 13px;background:transparent;display:flex;align-items:center;gap:6px;min-height:30px;}
+.card-remarks-bar{border-top:1px solid var(--border);padding:5px 12px 5px 13px;background:transparent;display:flex;align-items:center;gap:6px;min-height:30px;flex-shrink:0;}
 .rmk-text{flex:1;font-size:10px;color:var(--text-muted);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rmk-text.has-rmk{color:var(--text-dim);font-style:normal;font-weight:400;}
 .rmk-edit-inline{background:var(--surface2);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:3px 8px;outline:none;flex:1;transition:border-color .15s;display:none;}
@@ -232,7 +234,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 .card.k-offrun .status-badge{color:var(--offrun);background:rgba(167,139,250,.1);}
 .card.k-nil .status-badge{color:var(--nil-text);background:var(--border);}
 /* Footer */
-.card-foot{border-top:1px solid var(--border);padding:6px 12px 6px 13px;display:flex;align-items:center;gap:5px;background:transparent;}
+.card-foot{border-top:1px solid var(--border);padding:6px 12px 6px 13px;display:flex;align-items:center;gap:5px;background:transparent;flex-shrink:0;min-height:42px;}
 .fbtn{font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;padding:6px 11px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent;min-height:32px;}
 .fbtn:hover{border-color:var(--border2);color:var(--text);}
 .fbtn.out-btn{border-color:rgba(251,146,60,.4);color:var(--out);}
@@ -528,7 +530,7 @@ body.is-admin .admin-only{display:flex;}
 .switch-user-panel{width:min(400px,100%);}
 
 /* ── KEYPRESS OPEN/CLOSE SYSTEM ── */
-.kp-locked-overlay{position:fixed;inset:0;z-index:800;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:rgba(10,12,17,.93);backdrop-filter:blur(8px);}
+.kp-locked-overlay{position:fixed;inset:0;z-index:700;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:rgba(10,12,17,.93);backdrop-filter:blur(8px);}
 .kp-locked-panel{background:var(--surface);border:1px solid rgba(224,82,82,.4);border-radius:16px;width:min(500px,100%);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.7);}
 .kp-locked-hero{padding:26px 28px 18px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(224,82,82,.08),transparent);}
 .kp-locked-icon{font-size:44px;margin-bottom:8px;line-height:1;}
@@ -544,7 +546,7 @@ body.is-admin .admin-only{display:flex;}
 .kp-open-btn:disabled{opacity:.35;cursor:not-allowed;background:var(--border2);box-shadow:none;}
 .kp-reopen-note{font-size:10px;color:var(--text-muted);text-align:center;margin-top:10px;line-height:1.6;}
 /* Close keypress bar — persistent at bottom */
-.kp-close-bar{max-width:1400px;margin:24px auto 0;border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:11px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(167,139,250,.05),transparent);transition:border-color .15s;}
+.kp-close-bar{max-width:1400px;margin:0 auto 14px;border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(167,139,250,.05),transparent);transition:border-color .15s;}
 .kp-close-bar:hover{border-color:rgba(167,139,250,.5);}
 .kp-close-bar-icon{font-size:20px;flex-shrink:0;}
 .kp-close-bar-text{flex:1;}
@@ -653,7 +655,7 @@ body.is-admin .admin-only{display:flex;}
   <div class="kp-close-bar-icon">🔒</div>
   <div class="kp-close-bar-text">
     <div class="kp-close-bar-title">Close Keypress</div>
-    <div class="kp-close-bar-sub" id="kp-close-bar-sub">Sign off by transport driver to close for the day. Can be done early.</div>
+    <div class="kp-close-bar-sub" id="kp-close-bar-sub">Transport driver sign-off required.</div>
   </div>
   <button class="kp-close-bar-btn" onclick="openKpCloseModal()">Close Keypress →</button>
 </div>
@@ -1336,7 +1338,7 @@ function buildCard(v){
   const sidebarHtml=`<div class="card-key-sidebar"><div class="card-key-lbl">KEY #</div><div class="card-key-num">${keyNum}</div></div>`;
 
   // Main
-  const mainHtml=`<div class="card-main"><div class="card-top-row"><div class="card-ico">${isNil?'\u2298':ico(v.vehicle)}</div><div class="card-info"><div class="card-name">${v.vehicle}</div><div class="card-reg">${v.reg}</div><div class="card-loc-row"><span class="card-loc-pin">\ud83d\udccd</span><span class="loc-chip" id="loc-t-${v.id}" onclick="editLoc(${v.id})">${st.location}</span><span class="card-loc-edit" onclick="editLoc(${v.id})">\u270e</span><input class="loc-inp" id="loc-i-${v.id}" value="${st.location}" onblur="saveLoc(${v.id})" onkeydown="locKey(event,${v.id})"></div>${subHtml}</div><div class="card-status-col">${statusHtml}</div></div></div>`;
+  const mainHtml=`<div class="card-main"><div class="card-top-row"><div class="card-ico">${isNil?'\u2298':ico(v.vehicle)}</div><div class="card-info"><div class="card-name">${v.vehicle}</div><div class="card-reg">${v.reg}</div><div class="card-loc-row"><span class="card-loc-pin">\ud83d\udccd</span><span class="loc-chip" id="loc-t-${v.id}" onclick="editLoc(${v.id})">${st.location}</span><span class="card-loc-edit" onclick="editLoc(${v.id})">\u270e</span><input class="loc-inp" id="loc-i-${v.id}" value="${st.location}" onblur="saveLoc(${v.id})" onkeydown="locKey(event,${v.id})"></div>${subHtml}</div><div class="card-status-col">${statusHtml}</div></div><div class="card-spacer"></div></div>`;
 
   card.innerHTML=`<div class="card-bar"></div><div class="card-body">${sidebarHtml}${mainHtml}</div>${rmkBarHtml}${footHtml}`;
   return card;
@@ -2433,7 +2435,7 @@ function kpIsLocked() { return kpStatus === 'closed'; }
 // Block all key actions when closed
 function kpGuard() {
   if (!kpIsLocked()) return false; // not locked, allow
-  alert('Keypress is closed.\nOpen the keypress first before making any changes.');
+  alert('Keypress is closed. Open it first.');
   return true; // locked, block
 }
 
@@ -2601,8 +2603,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="kp-locked-body">
       <button class="kp-open-btn" id="kp-open-btn" onclick="openKpOpenModal()">🔓 Open Keypress</button>
       <div class="kp-reopen-note" id="kp-reopen-note">
-        Transport driver must sign off to open.<br>
-        If you need emergency access, state a special purpose below.
+        Transport driver sign-off required to open.
       </div>
     </div>
   </div>
@@ -2639,13 +2640,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="fsec-title" style="color:var(--text-dim);"><span class="sec-icon">📋</span>Options</div>
         <div class="kp-chk-row">
           <input type="checkbox" id="kp-close-early-chk" onchange="toggleCloseEarly()">
-          <label class="kp-chk-lbl" for="kp-close-early-chk"><strong>Closing early</strong> (before midnight) — e.g. night duty ends at 8pm, keys won't be needed until tomorrow</label>
+          <label class="kp-chk-lbl" for="kp-close-early-chk"><strong>Closing early</strong> — keys not needed until tomorrow</label>
         </div>
         <div class="fg kp-special-row" id="kp-early-reason-row">
           <label class="fl" style="margin-top:8px;">Early Close Reason</label>
           <input class="fi" id="kp-close-early-reason" placeholder="e.g. Night duty standdown, low ops tempo" autocomplete="off">
         </div>
-        <div class="fhint" style="margin-top:8px;">Timestamp is always recorded automatically. All keys must be returned before closing.</div>
+        <div class="fhint" style="margin-top:8px;">Timestamp recorded automatically.</div>
       </div>
     </div>
     <div class="mfooter">
@@ -2686,7 +2687,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="fsec-title" style="color:var(--out);"><span class="sec-icon">⚠️</span>Special Re-Opening</div>
         <div class="kp-chk-row">
           <input type="checkbox" id="kp-reopen-special-chk" onchange="toggleSpecialReopen()">
-          <label class="kp-chk-lbl" for="kp-reopen-special-chk"><strong>Re-opening after early close</strong> — keys are needed on the same day despite earlier close</label>
+          <label class="kp-chk-lbl" for="kp-reopen-special-chk"><strong>Re-opening after early close</strong> — state reason below</label>
         </div>
         <div class="fg kp-special-row" id="kp-special-purpose-row">
           <label class="fl" style="margin-top:8px;">Special Purpose / Reason</label>
@@ -2714,15 +2715,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <input class="id-input" id="id-name-input" placeholder="e.g. CPL TAN WEI LIANG" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60">
       <div class="id-hint">
         Enter your <strong>full rank and name</strong> as it appears on official records.<br>
-        This will be stamped on every audit log entry you make.<br><br>
-        ⚠ <strong>Use your real name.</strong> All actions are logged and can be verified by your OIC.
+        Every action you take will be stamped with this name.<br><br>
+        ⚠ <strong>Use your real name.</strong> All actions are logged.
       </div>
       <button class="id-confirm-btn" id="id-confirm-btn" onclick="confirmIdentity()" disabled>Confirm &amp; Enter</button>
     </div>
     <div class="id-footer">
       <div class="id-footer-txt">
-        This system runs locally on this device.<br>
-        Your name is saved to this browser only — it does not transmit to any server.
+        Data is saved locally to this browser only.
       </div>
     </div>
   </div>
