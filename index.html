@@ -5,18 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPS Keypress Record</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<style>
-.fcv-ico-wrap {
-  width: 36px; height: 36px; border-radius: 7px; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; position: relative; z-index: 10;
-}
-.card.k-in .fcv-ico-wrap { box-shadow: 0 0 0 1px rgba(74,222,128,.15); }
-.card.k-out .fcv-ico-wrap { box-shadow: 0 0 0 1px rgba(251,146,60,.15); }
-.card.k-offrun .fcv-ico-wrap { box-shadow: 0 0 0 1px rgba(167,139,250,.15); }
-.fcv-ico-wrap canvas { display: block; width: 36px !important; height: 36px !important; }
-</style>
 <style>
 :root {
   --bg:#0d0f12;
@@ -472,6 +460,105 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 /* ── HDR OVERFLOW MENU ── */
 .hdr-menu-item{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--text-dim);background:transparent;border:none;border-radius:6px;cursor:pointer;text-align:left;transition:background .12s;-webkit-tap-highlight-color:transparent;}
 .hdr-menu-item:hover{background:var(--surface2);color:var(--text);}
+
+/* ── FLEET MANAGE MODAL ── */
+.fleet-mgr-panel{background:var(--surface);border:1px solid var(--border2);border-radius:12px;width:min(780px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;}
+.fleet-mgr-list{flex:1;overflow-y:auto;padding:0;}
+.fmv-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);transition:background .12s;}
+.fmv-row:hover{background:var(--surface2);}
+.fmv-row:last-child{border-bottom:none;}
+.fmv-keyno{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:var(--key-col);width:36px;text-align:center;flex-shrink:0;}
+.fmv-ico{font-size:18px;width:28px;text-align:center;flex-shrink:0;}
+.fmv-info{flex:1;min-width:0;}
+.fmv-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fmv-reg{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:1px;}
+.fmv-loc{font-size:10px;color:var(--text-muted);margin-top:1px;}
+.fmv-status{flex-shrink:0;}
+.fmv-status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.fmv-actions{display:flex;gap:5px;flex-shrink:0;}
+.fmv-btn{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.fmv-btn:hover{border-color:var(--border2);color:var(--text);}
+.fmv-btn.edit-btn:hover{border-color:var(--accent);color:var(--accent);}
+.fmv-btn.del-btn:hover{border-color:var(--danger);color:var(--danger);}
+.fmv-nil-row{opacity:.5;}
+.fleet-mgr-add-bar{padding:12px 16px;border-top:1px solid var(--border);background:var(--surface2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.fleet-mgr-add-bar span{font-size:10px;color:var(--text-muted);}
+.badd{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:7px 16px;border-radius:6px;border:1px solid rgba(74,222,128,.4);background:rgba(74,222,128,.07);color:var(--in);cursor:pointer;transition:all .15s;}
+.badd:hover{background:rgba(74,222,128,.15);}
+/* Vehicle edit/add form inside a modal */
+.veh-form-overlay{z-index:600;}
+.bp-fleet{background:var(--accent);}
+.nil-toggle-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.nil-toggle-lbl{font-size:11px;color:var(--text-dim);flex:1;}
+.nil-toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
+.nil-toggle input{opacity:0;width:0;height:0;position:absolute;}
+.nil-toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:10px;cursor:pointer;transition:background .2s;}
+.nil-toggle input:checked+.nil-toggle-track{background:var(--danger);}
+.nil-toggle-track::after{content:'';position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;}
+.nil-toggle input:checked+.nil-toggle-track::after{transform:translateX(16px);}
+
+/* ── IDENTITY / ONBOARDING ── */
+.id-overlay{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);}
+.id-panel{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:min(460px,100%);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6);}
+.id-hero{padding:28px 28px 20px;border-bottom:1px solid var(--border);text-align:center;}
+.id-logo{font-size:36px;margin-bottom:10px;}
+.id-title{font-size:18px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px;}
+.id-sub{font-size:11px;color:var(--text-dim);letter-spacing:.06em;}
+.id-body{padding:22px 28px;}
+.id-label{font-size:9px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px;display:block;}
+.id-input{width:100%;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;background:var(--surface2);border:1.5px solid var(--border2);border-radius:8px;color:var(--text);padding:11px 14px;outline:none;transition:border-color .15s;letter-spacing:.02em;}
+.id-input:focus{border-color:var(--accent);}
+.id-hint{font-size:10px;color:var(--text-muted);margin-top:7px;line-height:1.5;}
+.id-hint strong{color:var(--text-dim);}
+.id-confirm-btn{width:100%;margin-top:16px;padding:12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;transition:opacity .15s;}
+.id-confirm-btn:hover{opacity:.88;}
+.id-confirm-btn:disabled{opacity:.4;cursor:not-allowed;}
+.id-footer{padding:14px 28px;border-top:1px solid var(--border);background:var(--surface2);text-align:center;}
+.id-footer-txt{font-size:10px;color:var(--text-muted);line-height:1.6;}
+/* Identity badge in header */
+.id-badge{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:5px 10px;cursor:pointer;transition:border-color .15s;max-width:200px;}
+.id-badge:hover{border-color:var(--border2);}
+.id-badge-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:#fff;}
+.id-badge-name{font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.id-badge-role{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;}
+/* Admin-only elements */
+.admin-only{display:none;}
+body.is-admin .admin-only{display:flex;}
+/* Switch user modal */
+.switch-user-panel{width:min(400px,100%);}
+
+/* ── KEYPRESS OPEN/CLOSE SYSTEM ── */
+.kp-locked-overlay{position:fixed;inset:0;z-index:800;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:rgba(10,12,17,.93);backdrop-filter:blur(8px);}
+.kp-locked-panel{background:var(--surface);border:1px solid rgba(224,82,82,.4);border-radius:16px;width:min(500px,100%);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.7);}
+.kp-locked-hero{padding:26px 28px 18px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(224,82,82,.08),transparent);}
+.kp-locked-icon{font-size:44px;margin-bottom:8px;line-height:1;}
+.kp-locked-title{font-size:17px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--danger);margin-bottom:4px;}
+.kp-locked-sub{font-size:11px;color:var(--text-dim);letter-spacing:.03em;}
+.kp-locked-meta{padding:14px 22px;display:flex;flex-direction:column;gap:7px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.kp-meta-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.kp-meta-lbl{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;}
+.kp-meta-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);font-weight:500;}
+.kp-locked-body{padding:18px 22px 20px;}
+.kp-open-btn{width:100%;padding:13px;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;cursor:pointer;transition:opacity .15s;box-shadow:0 4px 18px rgba(34,197,94,.35);}
+.kp-open-btn:hover{opacity:.88;}
+.kp-open-btn:disabled{opacity:.35;cursor:not-allowed;background:var(--border2);box-shadow:none;}
+.kp-reopen-note{font-size:10px;color:var(--text-muted);text-align:center;margin-top:10px;line-height:1.6;}
+/* Close keypress bar — persistent at bottom */
+.kp-close-bar{max-width:1400px;margin:24px auto 0;border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:11px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(167,139,250,.05),transparent);transition:border-color .15s;}
+.kp-close-bar:hover{border-color:rgba(167,139,250,.5);}
+.kp-close-bar-icon{font-size:20px;flex-shrink:0;}
+.kp-close-bar-text{flex:1;}
+.kp-close-bar-title{font-size:11px;font-weight:700;color:var(--offrun);margin-bottom:1px;}
+.kp-close-bar-sub{font-size:10px;color:var(--text-dim);}
+.kp-close-bar-btn{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:7px 14px;border-radius:6px;border:1px solid rgba(167,139,250,.4);background:rgba(167,139,250,.1);color:var(--offrun);cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.kp-close-bar-btn:hover{background:rgba(167,139,250,.2);}
+/* Close/Open modal specifics */
+.kp-chk-row{display:flex;align-items:flex-start;gap:10px;padding:5px 0;}
+.kp-chk-row input[type=checkbox]{width:15px;height:15px;margin-top:2px;accent-color:var(--offrun);cursor:pointer;flex-shrink:0;}
+.kp-chk-lbl{font-size:11px;color:var(--text-dim);line-height:1.5;cursor:pointer;}
+.kp-chk-lbl strong{color:var(--text);}
+.kp-special-row{display:none;margin-top:4px;}
+.kp-special-row.visible{display:block;}
 </style>
 </head>
 <body>
@@ -490,11 +577,15 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="10" height="12" rx="1.5"/><line x1="4.5" y1="4.5" x2="9.5" y2="4.5"/><line x1="4.5" y1="7" x2="9.5" y2="7"/><line x1="4.5" y1="9.5" x2="7" y2="9.5"/></svg>
       Records
     </button>
-    <button class="hbtn" onclick="addDummyRecords()" style="border-color:rgba(167,139,250,.4);color:var(--offrun);">
-      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5.5"/><line x1="7" y1="4" x2="7" y2="7"/><line x1="7" y1="9.5" x2="7" y2="10"/></svg>
-      Dummy Data
+    <button class="hbtn admin-only" id="btn-fleet-mgr" onclick="openFleetMgr()" title="Manage fleet" style="display:none;">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="12" height="8" rx="1.5"/><line x1="4" y1="3" x2="4" y2="11"/><line x1="10" y1="3" x2="10" y2="11"/><line x1="1" y1="7" x2="13" y2="7"/></svg>
+      Fleet
     </button>
-    <button class="hbtn" onclick="confirmClearAll()" style="border-color:rgba(224,82,82,.35);color:var(--danger);">
+    <button class="hbtn admin-only" id="btn-dummy" onclick="addDummyRecords()" style="display:none;border-color:rgba(167,139,250,.4);color:var(--offrun);">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5.5"/><line x1="7" y1="4" x2="7" y2="7"/><line x1="7" y1="9.5" x2="7" y2="10"/></svg>
+      Dummy
+    </button>
+    <button class="hbtn admin-only" id="btn-clear-all" onclick="confirmClearAll()" style="display:none;border-color:rgba(224,82,82,.35);color:var(--danger);">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 12,4"/><path d="M5,4V2h4v2"/><rect x="3" y="4" width="8" height="8" rx="1"/><line x1="5.5" y1="7" x2="5.5" y2="10"/><line x1="8.5" y1="7" x2="8.5" y2="10"/></svg>
       Clear All
     </button>
@@ -502,6 +593,13 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" id="theme-icon"><circle cx="7" cy="7" r="2.5"/><line x1="7" y1="1" x2="7" y2="2.5"/><line x1="7" y1="11.5" x2="7" y2="13"/><line x1="1" y1="7" x2="2.5" y2="7"/><line x1="11.5" y1="7" x2="13" y2="7"/></svg>
       <span id="th-lbl">Light</span>
     </button>
+    <div class="id-badge" onclick="openSwitchUser()" title="Tap to change user" id="id-badge" style="display:none;">
+      <div class="id-badge-avatar" id="id-avatar" style="background:var(--accent);">?</div>
+      <div style="min-width:0;">
+        <div class="id-badge-name" id="id-badge-name">—</div>
+        <div class="id-badge-role" id="id-badge-role">—</div>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -548,6 +646,16 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
     <div class="bulk-banner-sub">All keys in keypress. Loan out all at once for morning parade.</div>
   </div>
   <button class="bulk-banner-btn" onclick="openBulkModal()">Loan Out All</button>
+</div>
+
+<!-- ── KEYPRESS CLOSE BAR ── -->
+<div class="kp-close-bar" id="kp-close-bar">
+  <div class="kp-close-bar-icon">🔒</div>
+  <div class="kp-close-bar-text">
+    <div class="kp-close-bar-title">Close Keypress</div>
+    <div class="kp-close-bar-sub" id="kp-close-bar-sub">Sign off by transport driver to close for the day. Can be done early.</div>
+  </div>
+  <button class="kp-close-bar-btn" onclick="openKpCloseModal()">Close Keypress →</button>
 </div>
 
 <div class="toolbar">
@@ -662,14 +770,14 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
             </div>
           </div>
         </div>
-        <div class="fg" style="margin-top:10px;"><label class="fl">Purpose / Task</label><input class="fi" id="i-purpose" placeholder="e.g. Training at STN45, First Parade…" autocomplete="off"></div>
+        <div class="fg" style="margin-top:10px;"><label class="fl">Purpose / Task</label><input class="fi" id="i-purpose" placeholder="e.g. Exercise, Turnout, Detail..." autocomplete="off"></div>
       </div>
       <!-- BORROWER -->
       <div class="fsec-block sec-borrow">
         <div class="fsec-title borrow-t"><span class="sec-icon">👤</span>Borrower</div>
         <div class="frow">
-          <div class="fg"><label class="fl">Rank &amp; Name</label><input class="fi" id="i-bname" placeholder="e.g. SGT LIAO JUN HAO" autocomplete="off"></div>
-          <div class="fg"><label class="fl">Unit / Dept</label><input class="fi" id="i-bunit" placeholder="e.g. OPS / 1 SIR" autocomplete="off"></div>
+          <div class="fg"><label class="fl">Rank &amp; Name</label><input class="fi" id="i-bname" placeholder="e.g. SGT RYAN" autocomplete="off"></div>
+          <div class="fg"><label class="fl">Unit / Dept</label><input class="fi" id="i-bunit" placeholder="e.g. OPS / TRANSPORT" autocomplete="off"></div>
         </div>
         <div class="fg" style="margin-top:10px;">
           <label class="fl">Borrower Signature</label>
@@ -703,9 +811,9 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
       </div>
       <!-- OPS ISSUING -->
       <div class="fsec-block sec-ops" style="border-bottom:none;">
-        <div class="fsec-title ops-t"><span class="sec-icon">✅</span>OPS Issuing Officer</div>
+        <div class="fsec-title ops-t"><span class="sec-icon">✅</span>OPS Issuing Personnel</div>
         <div class="frow">
-          <div class="fg"><label class="fl">Rank &amp; Name</label><input class="fi" id="i-ops-name" placeholder="e.g. CPL AHMAD FIRDAUS" autocomplete="off"></div>
+          <div class="fg"><label class="fl">Rank &amp; Name</label><input class="fi" id="i-ops-name" placeholder="e.g. SGT LEX WEE" autocomplete="off"></div>
         </div>
         <div class="fg" style="margin-top:10px;">
           <label class="fl">OPS Signature</label>
@@ -857,7 +965,7 @@ header{max-width:1400px;margin:0 auto 18px;display:flex;align-items:center;gap:1
 
 <script>
 const SK='ops_keypress_v3';
-function persist(){
+function _basePersist(){
   try{
     localStorage.setItem(SK,JSON.stringify({
       state:Object.fromEntries(Object.entries(state)),
@@ -915,16 +1023,16 @@ let pendingId=null;
 vehicles.forEach(v=>{
   state[v.id]={status:'in',since:Date.now(),location:v.location,remarks:'',offrunReason:'',offrunFrom:'',offrunUntil:''};
 });
-hydrate();
+// hydrate() replaced by _hydratePatched below (after CRUD JS), which also restores customVehicles
 
 // ─── HELPERS ─────────────────────────────────────────────
 function ico(v){
   const u=v.toUpperCase();
-  if(u.includes('FCV'))return'__FCV3D__';
   if(u.includes('BUS'))return'🚌';
   if(u.includes('LORRY')||u.includes('CL3'))return'🚛';
   if(u.includes('SUV'))return'🚙';
   if(u.includes('CAB'))return'🛻';
+  if(u.includes('FCV'))return'🚒';
   if(u.includes('IV'))return'🚐';
   return'🚗';
 }
@@ -953,7 +1061,8 @@ function sw(ts){
 function statusLabel(st){return{in:'IN KEYPRESS',out:'LOANED OUT',offrun:'OFF-RUN'}[st.status]||'—';}
 function addLog(id,toStatus,toLabel,detail='',recSnapshot=null){
   const v=vehicles.find(x=>x.id===id);
-  auditLog.unshift({ts:Date.now(),id,toStatus,toLabel,vehicle:v.vehicle,reg:v.reg,detail,rec:recSnapshot});
+  const by=currentUser?.name||null;
+  auditLog.unshift({ts:Date.now(),id,toStatus,toLabel,vehicle:v?v.vehicle:'SYSTEM',reg:v?v.reg:'',detail,rec:recSnapshot,by});
 }
 
 // ─── SIGNATURE PAD ────────────────────────────────────────
@@ -1065,7 +1174,7 @@ function reinitSig(id){setTimeout(()=>{
 },60);}
 
 // ─── STATUS CHANGE ────────────────────────────────────────
-function setStatusDirect(id,newStatus){
+function _baseSetStatusDirect(id,newStatus){
   const st=state[id];
   if(newStatus==='in'){delete records[id];st.offrunReason='';st.offrunFrom='';st.offrunUntil='';}
   st.status=newStatus;st.since=Date.now();
@@ -1111,8 +1220,9 @@ function issuedPrevDay(ts){
   return issued.toDateString()!==now.toDateString();
 }
 function checkMidnightFlags(){
-  const flagged=vehicles.filter(v=>!v.nil&&state[v.id].status==='out'&&records[v.id]&&issuedPrevDay(records[v.id].issuedAt));
   const banner=document.getElementById('midnight-banner');
+  if(kpStatus==='closed'){banner.style.display='none';return;}
+  const flagged=vehicles.filter(v=>!v.nil&&state[v.id].status==='out'&&records[v.id]&&issuedPrevDay(records[v.id].issuedAt));
   if(flagged.length){
     banner.style.display='flex';
     const names=flagged.map(v=>`${v.vehicle} (Key #${v.bunchNo})`).join(', ');
@@ -1226,16 +1336,9 @@ function buildCard(v){
   const sidebarHtml=`<div class="card-key-sidebar"><div class="card-key-lbl">KEY #</div><div class="card-key-num">${keyNum}</div></div>`;
 
   // Main
-  const icoVal = isNil ? '\u2298' : ico(v.vehicle);
-  const icoHtml = icoVal === '__FCV3D__'
-    ? `<div class="fcv-ico-wrap" id="fcv-ico-${v.id}"><canvas id="fcv-canvas-${v.id}" width="36" height="36"></canvas></div>`
-    : `<div class="card-ico">${icoVal}</div>`;
-  const mainHtml=`<div class="card-main"><div class="card-top-row">${icoHtml}<div class="card-info"><div class="card-name">${v.vehicle}</div><div class="card-reg">${v.reg}</div><div class="card-loc-row"><span class="card-loc-pin">\ud83d\udccd</span><span class="loc-chip" id="loc-t-${v.id}" onclick="editLoc(${v.id})">${st.location}</span><span class="card-loc-edit" onclick="editLoc(${v.id})">\u270e</span><input class="loc-inp" id="loc-i-${v.id}" value="${st.location}" onblur="saveLoc(${v.id})" onkeydown="locKey(event,${v.id})"></div>${subHtml}</div><div class="card-status-col">${statusHtml}</div></div></div>`;
+  const mainHtml=`<div class="card-main"><div class="card-top-row"><div class="card-ico">${isNil?'\u2298':ico(v.vehicle)}</div><div class="card-info"><div class="card-name">${v.vehicle}</div><div class="card-reg">${v.reg}</div><div class="card-loc-row"><span class="card-loc-pin">\ud83d\udccd</span><span class="loc-chip" id="loc-t-${v.id}" onclick="editLoc(${v.id})">${st.location}</span><span class="card-loc-edit" onclick="editLoc(${v.id})">\u270e</span><input class="loc-inp" id="loc-i-${v.id}" value="${st.location}" onblur="saveLoc(${v.id})" onkeydown="locKey(event,${v.id})"></div>${subHtml}</div><div class="card-status-col">${statusHtml}</div></div></div>`;
 
   card.innerHTML=`<div class="card-bar"></div><div class="card-body">${sidebarHtml}${mainHtml}</div>${rmkBarHtml}${footHtml}`;
-  if(ico(v.vehicle)==='__FCV3D__'){
-    requestAnimationFrame(()=>initFCV3D(v.id));
-  }
   return card;
 }
 // ─── TOGGLES ──────────────────────────────────────────────
@@ -1270,12 +1373,12 @@ function cancelRemarksInline(id){
   editBtn.style.display='';saveBtn.style.display='none';clrBtn.style.display='none';
   inp.value=(state[id].remarks||'');
 }
-function saveRemarksInline(id){
+function _baseSaveRemarksInline(id){
   const inp=document.getElementById('rmki-'+id);if(!inp)return;
   state[id].remarks=inp.value.trim();
   cancelRemarksInline(id);renderAll();persist();
 }
-function clearRemarksInline(id){
+function _baseClearRemarksInline(id){
   state[id].remarks='';
   const inp=document.getElementById('rmki-'+id);if(inp)inp.value='';
   cancelRemarksInline(id);renderAll();persist();
@@ -1612,7 +1715,7 @@ function openOffrun(id){
   document.getElementById('ov-offrun').classList.add('open');
 }
 function closeOffrun(){document.getElementById('ov-offrun').classList.remove('open');pendingId=null;}
-function applyOffrun(){
+function _baseApplyOffrun(){
   if(!pendingId)return;const id=pendingId;
   const st=state[id];
   st.offrunReason=document.getElementById('or-reason').value.trim();
@@ -1674,7 +1777,7 @@ function renderLogEntries(entries,bid,showVeh=false){
   body.innerHTML=entries.map((e,i)=>{
     const c=col[e.toStatus]||'var(--nil-text)';
     const hasRec=!!(e.rec);
-    return`<div class="log-entry"><div class="log-ts">${fmtDT(e.ts)}</div><div class="log-dot-col"><div class="log-dot" style="background:${c}"></div>${i<entries.length-1?'<div class="log-line"></div>':''}</div><div class="log-cnt"><div class="log-act">${showVeh?`<b>${e.vehicle}</b> · `:''}${e.toLabel}</div>${e.detail?`<div class="log-det">${e.detail}</div>`:''} ${showVeh?`<div class="log-det">${e.reg}</div>`:''}${hasRec?`<button class="log-view-rec" onclick='openRecordViewFromLog(${JSON.stringify(e.rec)},${JSON.stringify(e.vehicle)},${JSON.stringify(e.reg)})'>View Full Record →</button>`:''}</div></div>`;
+    return`<div class="log-entry"><div class="log-ts">${fmtDT(e.ts)}</div><div class="log-dot-col"><div class="log-dot" style="background:${c}"></div>${i<entries.length-1?'<div class="log-line"></div>':''}</div><div class="log-cnt"><div class="log-act">${showVeh?`<b>${e.vehicle}</b> · `:''}${e.toLabel}</div>${e.detail?`<div class="log-det">${e.detail}</div>`:''} ${showVeh?`<div class="log-det">${e.reg}</div>`:''}<div class="log-det" style="color:var(--text-muted);font-size:9px;margin-top:3px;">👤 ${e.by||'Unknown'}</div>${hasRec?`<button class="log-view-rec" onclick='openRecordViewFromLog(${JSON.stringify(e.rec)},${JSON.stringify(e.vehicle)},${JSON.stringify(e.reg)})'>View Full Record →</button>`:''}</div></div>`;
   }).join('');
 }
 
@@ -1702,10 +1805,28 @@ function tick(){
     const el=document.getElementById('rv-sw-'+v.id);if(el)el.textContent=sw(r.issuedAt);
     const rs=document.getElementById('retsw-'+v.id);if(rs)rs.textContent=sw(r.issuedAt);
   });
-  // ── closing-soon banner ──
+  // ── Update close bar sub-text with live key count ──
+  const kpCloseBar = document.getElementById('kp-close-bar');
+  const kpCloseSub = document.getElementById('kp-close-bar-sub');
+  if (kpCloseBar && kpCloseSub && kpStatus === 'open') {
+    const outCount = vehicles.filter(v => !v.nil && state[v.id]?.status === 'out').length;
+    const offrunCount = vehicles.filter(v => !v.nil && state[v.id]?.status === 'offrun').length;
+    if (outCount > 0) {
+      kpCloseSub.textContent = `⚠ ${outCount} key(s) still loaned out — return before closing.`;
+      kpCloseSub.style.color = 'var(--out)';
+    } else if (offrunCount > 0) {
+      kpCloseSub.textContent = `${offrunCount} vehicle(s) off-run · All other keys are in. Ready to close.`;
+      kpCloseSub.style.color = 'var(--text-dim)';
+    } else {
+      kpCloseSub.textContent = 'All keys in keypress. Transport driver to sign off.';
+      kpCloseSub.style.color = 'var(--in)';
+    }
+  }
+  // ── closing-soon banner — suppress if already closed ──
+  const cb=document.getElementById('closing-banner');
+  if (kpStatus === 'closed') { if(cb) cb.style.display='none'; return; }
   const midnight=new Date(now);midnight.setHours(24,0,0,0);
   const secsLeft=Math.floor((midnight-now)/1000);
-  const cb=document.getElementById('closing-banner');
   const minsLeft=Math.floor(secsLeft/60);
   if(secsLeft<=60){
     cb.style.display='flex';
@@ -1720,7 +1841,7 @@ function tick(){
     cb.className='closing-banner tier-15';
     document.getElementById('closing-icon').textContent='⚠️';
     document.getElementById('closing-title').textContent='Keypress Closes in 15 Minutes';
-    document.getElementById('closing-sub').textContent='Ensure all keys are returned and the book is signed off before midnight.';
+    document.getElementById('closing-sub').textContent='Ensure all keys are returned and signed off before midnight.';
     const m=Math.floor(secsLeft/60),s=secsLeft%60;
     document.getElementById('closing-countdown').textContent=`${m}:${String(s).padStart(2,'0')}`;
   } else if(secsLeft<=30*60){
@@ -1728,7 +1849,7 @@ function tick(){
     cb.className='closing-banner tier-30';
     document.getElementById('closing-icon').textContent='🕛';
     document.getElementById('closing-title').textContent='Keypress Closes in 30 Minutes';
-    document.getElementById('closing-sub').textContent='Ensure all keys are returned and the book is signed off before midnight.';
+    document.getElementById('closing-sub').textContent='Ensure all keys are returned and signed off before midnight.';
     const m=Math.floor(secsLeft/60),s=secsLeft%60;
     document.getElementById('closing-countdown').textContent=`${m}:${String(s).padStart(2,'0')}`;
   } else {
@@ -1962,411 +2083,723 @@ document.addEventListener('click',e=>{
   }
 });
 
-// ─── FCV 3D RENDERER ─────────────────────────────────────
-const fcvScenes = {};
-function initFCV3D(vehicleId) {
-  const canvas = document.getElementById('fcv-canvas-' + vehicleId);
-  if (!canvas || fcvScenes[vehicleId]) return;
+// ─── IDENTITY & ROLES ────────────────────────────────────
+// Edit this list to grant admin access. Names are checked case-insensitively.
+const ADMIN_NAMES = [
+  // Add exact rank+name strings your admins will enter at login, e.g.:
+  // 'SGT TAN WEI LIANG',
+  // 'CPL AHMAD FIRDAUS BIN SAID',
+  'ADMIN', // dev shortcut — remove before going live
+];
 
-  // Render at 4× for crispness, display at 36px via CSS
-  const RES = 144;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setSize(RES, RES);
-  renderer.setPixelRatio(1);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  canvas.style.width = '36px';
-  canvas.style.height = '36px';
+let currentUser = null; // { name, role: 'admin'|'user' }
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-  camera.position.set(4.2, 2.0, 3.8);
-  camera.lookAt(0, 0.5, 0);
-
-  // ── LIGHTS ──
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-  const sun = new THREE.DirectionalLight(0xfff8f0, 1.5);
-  sun.position.set(6, 9, 5); sun.castShadow = true;
-  scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xc8d8f0, 0.5);
-  fill.position.set(-5, 3, -3); scene.add(fill);
-  const under = new THREE.DirectionalLight(0x303040, 0.2);
-  under.position.set(0, -4, 0); scene.add(under);
-
-  // ── MATERIALS ──
-  // FCV49 is matte black body, white cab, red stripe
-  const blackBodyMat = new THREE.MeshStandardMaterial({ color: 0x111314, roughness: 0.45, metalness: 0.35 });
-  const whiteCabMat  = new THREE.MeshStandardMaterial({ color: 0xdde4ea, roughness: 0.35, metalness: 0.25 });
-  const redMat       = new THREE.MeshStandardMaterial({ color: 0xcc0a0a, roughness: 0.35, metalness: 0.25 });
-  const darkMat      = new THREE.MeshStandardMaterial({ color: 0x0d0f10, roughness: 0.55, metalness: 0.3 });
-  const chromeMat    = new THREE.MeshStandardMaterial({ color: 0xd4d8dc, roughness: 0.08, metalness: 0.95 });
-  const glassMat     = new THREE.MeshStandardMaterial({ color: 0x7aaabb, roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.55 });
-  const blackTyreMat = new THREE.MeshStandardMaterial({ color: 0x181a1c, roughness: 0.85, metalness: 0.0 });
-  const yellowMat    = new THREE.MeshStandardMaterial({ color: 0xffcc00, roughness: 0.4, metalness: 0.1, emissive: 0xffcc00, emissiveIntensity: 0.15 });
-  const silverMat    = new THREE.MeshStandardMaterial({ color: 0x9aa0a8, roughness: 0.3, metalness: 0.6 });
-  const hexMat       = new THREE.MeshStandardMaterial({ color: 0x888e96, roughness: 0.3, metalness: 0.5 });
-
-  const group = new THREE.Group();
-
-  // ══════════════════════════════════════════
-  //  CHASSIS / FRAME
-  // ══════════════════════════════════════════
-  // Main chassis rail
-  const chassis = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.12, 0.72), darkMat);
-  chassis.position.set(0, 0.28, 0);
-  group.add(chassis);
-
-  // ══════════════════════════════════════════
-  //  COMMAND BOX BODY (rear 2/3 of vehicle)
-  //  Large, tall, boxy — nearly square profile
-  // ══════════════════════════════════════════
-  const boxBody = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.15, 0.94), blackBodyMat);
-  boxBody.position.set(0.55, 1.01, 0);
-  boxBody.castShadow = true;
-  group.add(boxBody);
-
-  // Box body roof overhang (slightly wider)
-  const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.07, 0.98), blackBodyMat);
-  roofSlab.position.set(0.55, 1.61, 0);
-  group.add(roofSlab);
-
-  // ── RED DIAGONAL STRIPE on box body side ──
-  // Approximated as a tall red band across upper body
-  const stripeTop = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.28, 0.02), redMat);
-  stripeTop.position.set(0.55, 1.35, 0.48);
-  group.add(stripeTop);
-  const stripeTopR = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.28, 0.02), redMat);
-  stripeTopR.position.set(0.55, 1.35, -0.48);
-  group.add(stripeTopR);
-
-  // ── WHITE LOWER STRIPE ──
-  const stripeWhite = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.06, 0.02), whiteCabMat);
-  stripeWhite.position.set(0.55, 0.62, 0.48);
-  group.add(stripeWhite);
-  const stripeWhiteR = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.06, 0.02), whiteCabMat);
-  stripeWhiteR.position.set(0.55, 0.62, -0.48);
-  group.add(stripeWhiteR);
-
-  // ── CHEQUERBOARD BOTTOM STRIP (yellow/red) ──
-  // Simulated as alternating yellow/red small blocks
-  const chkW = 0.14;
-  for (let i = 0; i < 14; i++) {
-    const cx2 = -0.91 + i * chkW + chkW / 2;
-    const mat = i % 2 === 0 ? yellowMat : redMat;
-    [-0.475, 0.475].forEach(z => {
-      const chk = new THREE.Mesh(new THREE.BoxGeometry(chkW - 0.01, 0.09, 0.02), mat);
-      chk.position.set(cx2, 0.49, z);
-      group.add(chk);
-    });
-  }
-
-  // ── HONEYCOMB PANEL (rear right side — silver/grey) ──
-  const honeySlab = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.75, 0.02), hexMat);
-  honeySlab.position.set(1.25, 1.07, 0.475);
-  group.add(honeySlab);
-  // Outline
-  const honeyBorder = new THREE.Mesh(new THREE.BoxGeometry(0.67, 0.77, 0.015), silverMat);
-  honeyBorder.position.set(1.25, 1.07, 0.474);
-  group.add(honeyBorder);
-
-  // ── SIDE EQUIPMENT LOCKER DOORS ──
-  [0.1, 0.55, 1.0].forEach(xOff => {
-    [-0.476, 0.476].forEach(z => {
-      const door = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.42, 0.015), darkMat);
-      door.position.set(-0.45 + xOff, 0.85, z);
-      group.add(door);
-      // Door handle
-      const handle = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.025, 0.025), chromeMat);
-      handle.position.set(-0.45 + xOff, 0.85, z + (z > 0 ? 0.02 : -0.02));
-      group.add(handle);
-    });
-  });
-
-  // ── REAR PANEL ──
-  const rearPanel = new THREE.Mesh(new THREE.BoxGeometry(0.02, 1.1, 0.92), darkMat);
-  rearPanel.position.set(1.555, 1.02, 0);
-  group.add(rearPanel);
-  // Rear door lines
-  const rearDoorLine = new THREE.Mesh(new THREE.BoxGeometry(0.025, 1.0, 0.02), chromeMat);
-  rearDoorLine.position.set(1.56, 1.0, 0);
-  group.add(rearDoorLine);
-
-  // ══════════════════════════════════════════
-  //  CAB (front — white, MAN TGM style)
-  //  Accurate to reference: large windshield
-  //  high on face, headlights LOW, black apron
-  // ══════════════════════════════════════════
-
-  // ── CAB LOWER BODY (white) — from chassis up to windshield base ──
-  const cabLower = new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.72, 0.92), whiteCabMat);
-  cabLower.position.set(-1.23, 0.68, 0);
-  cabLower.castShadow = true;
-  group.add(cabLower);
-
-  // ── CAB UPPER BODY / A-PILLARS (dark — forms the windshield surround) ──
-  const cabUpper = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.62, 0.92), darkMat);
-  cabUpper.position.set(-1.25, 1.23, 0);
-  group.add(cabUpper);
-
-  // ── WINDSHIELD (large, fills almost entire upper cab face) ──
-  // Wide single piece, slight inset from the dark surround
-  const windshield = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.50, 0.74), glassMat);
-  windshield.position.set(-1.735, 1.22, 0);
-  group.add(windshield);
-
-  // A-pillar left and right (dark strips framing windshield)
-  [-0.385, 0.385].forEach(z => {
-    const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.52, 0.075), darkMat);
-    pillar.position.set(-1.734, 1.22, z);
-    group.add(pillar);
-  });
-  // Windshield top header bar
-  const wsTop = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.07, 0.76), darkMat);
-  wsTop.position.set(-1.734, 1.49, 0);
-  group.add(wsTop);
-  // Windshield bottom sill
-  const wsSill = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.05, 0.76), darkMat);
-  wsSill.position.set(-1.734, 0.955, 0);
-  group.add(wsSill);
-
-  // ── CAB ROOF (dark, slightly overhangs) ──
-  const cabRoof = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.10, 0.94), darkMat);
-  cabRoof.position.set(-1.24, 1.575, 0);
-  group.add(cabRoof);
-  // Roof sunvisor strip (dark tinted band above windshield)
-  const visor = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.07, 0.76),
-    new THREE.MeshStandardMaterial({ color: 0x1a2a35, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.80 }));
-  visor.position.set(-1.737, 1.535, 0);
-  group.add(visor);
-
-  // ── FRONT FACE LOWER — black apron / bumper area ──
-  const cabApron = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.36, 0.90), darkMat);
-  cabApron.position.set(-1.737, 0.50, 0);
-  group.add(cabApron);
-
-  // ── GRILLE (center, between headlights) ──
-  // Main grille opening
-  const grilleBox = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.22, 0.38), darkMat);
-  grilleBox.position.set(-1.742, 0.56, 0);
-  group.add(grilleBox);
-  // Horizontal grille slats
-  for (let i = 0; i < 5; i++) {
-    const slat = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.022, 0.36), chromeMat);
-    slat.position.set(-1.742, 0.46 + i * 0.048, 0);
-    group.add(slat);
-  }
-  // Chrome grille frame
-  const grilleFrame = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.26, 0.42), chromeMat);
-  grilleFrame.position.set(-1.744, 0.56, 0);
-  group.add(grilleFrame);
-  const grilleInner = new THREE.Mesh(new THREE.BoxGeometry(0.053, 0.22, 0.38), darkMat);
-  grilleInner.position.set(-1.743, 0.56, 0);
-  group.add(grilleInner);
-
-  // ── HEADLIGHTS — sit LOW on the front face, wide rectangular ──
-  // In the real FCV they're in the lower white section, flanking the grille
-  [-0.34, 0.34].forEach(z => {
-    // Main headlight housing (chrome surround)
-    const hlHousing = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.14, 0.22), chromeMat);
-    hlHousing.position.set(-1.742, 0.62, z);
-    group.add(hlHousing);
-    // Lens (bright)
-    const hlLens = new THREE.Mesh(new THREE.BoxGeometry(0.062, 0.11, 0.18),
-      new THREE.MeshStandardMaterial({ color: 0xf5f0d0, emissive: 0xf5f0d0, emissiveIntensity: 0.45, roughness: 0.05, metalness: 0.1 }));
-    hlLens.position.set(-1.744, 0.62, z);
-    group.add(hlLens);
-    // Indicator (amber strip below headlight)
-    const indicator = new THREE.Mesh(new THREE.BoxGeometry(0.058, 0.055, 0.18),
-      new THREE.MeshStandardMaterial({ color: 0xff9900, emissive: 0xff9900, emissiveIntensity: 0.2, roughness: 0.1 }));
-    indicator.position.set(-1.743, 0.525, z);
-    group.add(indicator);
-  });
-
-  // ── WHITE LOWER APRON (below grille, very bottom of cab front) ──
-  const lowerApron = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.18, 0.88), whiteCabMat);
-  lowerApron.position.set(-1.737, 0.31, 0);
-  group.add(lowerApron);
-
-  // SCDF logo panel (small blue rectangle on lower white section — like in photo)
-  const logoBadge = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.12),
-    new THREE.MeshStandardMaterial({ color: 0x003399, roughness: 0.3, metalness: 0.2 }));
-  logoBadge.position.set(-1.743, 0.72, -0.2);
-  group.add(logoBadge);
-
-  // ── SIDE MIRRORS (large, truck-style, on arms) ──
-  [0.47, -0.47].forEach((z, si) => {
-    const dir = z > 0 ? 1 : -1;
-    // Mirror arm (horizontal, sticking out from cab side)
-    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.20), darkMat);
-    arm.position.set(-1.56, 1.30, z + dir * 0.08);
-    group.add(arm);
-    // Mirror head (large, rectangular)
-    const mirrorHead = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.22, 0.10), darkMat);
-    mirrorHead.position.set(-1.56, 1.20, z + dir * 0.195);
-    group.add(mirrorHead);
-    // Mirror face (glass-like)
-    const mirrorFace = new THREE.Mesh(new THREE.BoxGeometry(0.050, 0.18, 0.085), glassMat);
-    mirrorFace.position.set(-1.555, 1.20, z + dir * 0.195);
-    group.add(mirrorFace);
-    // Small convex spotter mirror below
-    const spotter = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.09, 0.065), glassMat);
-    spotter.position.set(-1.555, 1.04, z + dir * 0.195);
-    group.add(spotter);
-  });
-
-  // ── CAB SIDE WINDOWS ──
-  // Large door window (upper portion of cab side)
-  [0.462, -0.462].forEach(z => {
-    const dw = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.34, 0.52), glassMat);
-    dw.position.set(-1.24, 1.23, z);
-    group.add(dw);
-    // Window frame/surround (thin dark border)
-    const dwFrame = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.38, 0.56), darkMat);
-    dwFrame.position.set(-1.241, 1.23, z);
-    group.add(dwFrame);
-    const dwGlass = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.33, 0.51), glassMat);
-    dwGlass.position.set(-1.240, 1.23, z);
-    group.add(dwGlass);
-    // Small quarter window (rear of cab)
-    const qw = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.22, 0.18), glassMat);
-    qw.position.set(-0.84, 1.22, z);
-    group.add(qw);
-  });
-
-  // ── CAB/BOX JUNCTION ──
-  const junction = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.15, 0.94), blackBodyMat);
-  junction.position.set(-0.71, 0.98, 0);
-  group.add(junction);
-
-  // ── ANTENNA (on cab roof left side) ──
-  const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.50, 6), darkMat);
-  antenna.position.set(-1.40, 1.84, 0.18);
-  group.add(antenna);
-
-  // ── DOOR HANDLES & STEP ──
-  [0.463, -0.463].forEach(z => {
-    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.035, 0.10), chromeMat);
-    handle.position.set(-1.24, 0.88, z);
-    group.add(handle);
-  });
-  // Cab entry step
-  const cabStep = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.06, 0.72), darkMat);
-  cabStep.position.set(-1.52, 0.39, 0);
-  group.add(cabStep);
-
-  // ── LIGHTBAR / BEACON STRIP on box roof ──
-  const lbBase = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.06, 0.22), darkMat);
-  lbBase.position.set(0.35, 1.66, 0);
-  group.add(lbBase);
-  // Alternating red/blue LEDs
-  const lightColors = [0xee1111, 0x0044ff, 0xee1111, 0x0044ff, 0xee1111, 0x0044ff, 0xee1111, 0x0044ff];
-  lightColors.forEach((col, i) => {
-    const lm = new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.9, roughness: 0.1, metalness: 0.1 });
-    const led = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.055, 0.18), lm);
-    led.position.set(-0.56 + i * 0.18, 1.674, 0);
-    group.add(led);
-  });
-
-  // ══════════════════════════════════════════
-  //  WHEELS — front pair + rear dual wheels
-  // ══════════════════════════════════════════
-  const addWheel = (x, z, dual = false) => {
-    const tyreR = 0.32, tyreW = dual ? 0.13 : 0.18;
-    const rimR = 0.20;
-    const offsets = dual ? [-0.10, 0.10] : [0];
-    offsets.forEach(oz => {
-      // Tyre
-      const tyre = new THREE.Mesh(new THREE.CylinderGeometry(tyreR, tyreR, tyreW, 20), blackTyreMat);
-      tyre.rotation.x = Math.PI / 2;
-      tyre.position.set(x, tyreR, z + oz);
-      tyre.castShadow = true;
-      group.add(tyre);
-      // Rim
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(rimR, rimR, tyreW + 0.01, 16), chromeMat);
-      rim.rotation.x = Math.PI / 2;
-      rim.position.set(x, tyreR, z + oz);
-      group.add(rim);
-      // Hub disc
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, tyreW + 0.02, 10), silverMat);
-      hub.rotation.x = Math.PI / 2;
-      hub.position.set(x, tyreR, z + oz);
-      group.add(hub);
-    });
-  };
-  // Front axle
-  addWheel(-1.18, 0.52);
-  addWheel(-1.18, -0.52);
-  // Rear axle (dual wheels)
-  addWheel(0.85, 0.52, true);
-  addWheel(0.85, -0.52, true);
-
-  // ══════════════════════════════════════════
-  //  BUMPER & STEP (front)
-  // ══════════════════════════════════════════
-  const bumper = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.14, 0.88), chromeMat);
-  bumper.position.set(-1.8, 0.42, 0);
-  group.add(bumper);
-  const step = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.06, 0.76), darkMat);
-  step.position.set(-1.75, 0.34, 0);
-  group.add(step);
-
-  // ══════════════════════════════════════════
-  //  EXHAUST STACK (vertical, cab right side)
-  // ══════════════════════════════════════════
-  const exStack = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.9, 8), darkMat);
-  exStack.position.set(-1.10, 1.55, -0.48);
-  group.add(exStack);
-  const exCap = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.035, 0.06, 8), darkMat);
-  exCap.position.set(-1.10, 2.01, -0.48);
-  group.add(exCap);
-
-  // ── GROUND SHADOW PLANE ──
-  const shadowPlane = new THREE.Mesh(
-    new THREE.PlaneGeometry(6, 5),
-    new THREE.ShadowMaterial({ opacity: 0.22 })
-  );
-  shadowPlane.rotation.x = -Math.PI / 2;
-  shadowPlane.receiveShadow = true;
-  scene.add(shadowPlane);
-
-  group.position.set(0, -0.32, 0);
-  scene.add(group);
-
-  // ══════════════════════════════════════════
-  //  ANIMATION — pure auto-rotate, no drag
-  // ══════════════════════════════════════════
-  let rotY = Math.PI * 0.22; // start at nice 3/4 front-left angle
-  const rotX = 0.13;         // fixed slight downward tilt
-  let lightTick = 0;
-
-  function animate() {
-    requestAnimationFrame(animate);
-    lightTick++;
-    // Flash lightbar — slow alternating 1.2s cycle
-    group.children.forEach(c => {
-      if (c.material && c.material.emissive && c.material.emissiveIntensity > 0.5) {
-        const col = c.material.color;
-        const isRed  = col.r > 0.6 && col.b < 0.3;
-        const isBlue = col.b > 0.5 && col.r < 0.3;
-        const phase = Math.floor(lightTick / 36) % 2;
-        if (isRed)  c.material.emissiveIntensity = phase === 0 ? 1.4 : 0.05;
-        if (isBlue) c.material.emissiveIntensity = phase === 0 ? 0.05 : 1.4;
-      }
-    });
-    rotY += 0.004; // ~25s per revolution
-    group.rotation.y = rotY;
-    group.rotation.x = rotX;
-    renderer.render(scene, camera);
-  }
-  animate();
-  fcvScenes[vehicleId] = { renderer, scene, camera, group };
+function isAdmin(name) {
+  return ADMIN_NAMES.some(a => a.toUpperCase() === (name || '').toUpperCase().trim());
 }
-// ─── END FCV 3D ──────────────────────────────────────────
+function avatarColor(name) {
+  const cols = ['#5b8fd4','#9b81e8','#4ade80','#fb923c','#a78bfa','#38b2c8','#e05252','#d4a04a'];
+  let h = 0; for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+  return cols[Math.abs(h) % cols.length];
+}
+function avatarInitials(name) {
+  const ranks = ['SGT','CPL','WO1','WO2','WO3','LTA','CPT','MAJ','LTC','COL','REC','PTE','SSG','MSG','3SG','2SG','1SG'];
+  const parts = name.trim().split(/\s+/);
+  const nonRank = parts.filter(p => !ranks.includes(p.toUpperCase()));
+  if (nonRank.length >= 2) return (nonRank[0][0] + nonRank[1][0]).toUpperCase();
+  return (nonRank[0] || parts[0])[0].toUpperCase();
+}
 
-// ─── INIT ─────────────────────────────────────────────────
-renderAll();tick();setInterval(tick,1000);
+function applyIdentity(name) {
+  const role = isAdmin(name) ? 'admin' : 'user';
+  currentUser = { name, role };
+  // Update header badge
+  document.getElementById('id-badge').style.display = 'flex';
+  document.getElementById('id-avatar').textContent = avatarInitials(name);
+  document.getElementById('id-avatar').style.background = avatarColor(name);
+  document.getElementById('id-badge-name').textContent = name;
+  document.getElementById('id-badge-role').textContent = role === 'admin' ? '⚡ Admin' : '👤 User';
+  // Show/hide admin controls
+  if (role === 'admin') {
+    document.body.classList.add('is-admin');
+    ['btn-fleet-mgr','btn-dummy','btn-clear-all'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display = 'flex';
+    });
+  } else {
+    document.body.classList.remove('is-admin');
+    ['btn-fleet-mgr','btn-dummy','btn-clear-all'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display = 'none';
+    });
+  }
+  try { localStorage.setItem('ops_kp_user', JSON.stringify({ name })); } catch(e) {}
+}
+
+function confirmIdentity() {
+  const raw = (document.getElementById('id-name-input').value || '').trim().toUpperCase();
+  if (raw.length < 2) return;
+  applyIdentity(raw);
+  addLog(0, 'in', 'SESSION START', `${raw} · Role: ${currentUser.role}`);
+  document.getElementById('id-overlay').style.display = 'none';
+  persist();
+}
+function openSwitchUser() {
+  document.getElementById('switch-user-sub').textContent = `Currently: ${currentUser?.name || '—'}`;
+  document.getElementById('switch-name-input').value = '';
+  document.getElementById('ov-switch-user').classList.add('open');
+  setTimeout(() => document.getElementById('switch-name-input').focus(), 80);
+}
+function closeSwitchUser() { document.getElementById('ov-switch-user').classList.remove('open'); }
+function applySwitchUser() {
+  const raw = (document.getElementById('switch-name-input').value || '').trim().toUpperCase();
+  if (raw.length < 2) { alert('Please enter a valid name.'); return; }
+  const prev = currentUser?.name || '—';
+  addLog(0, 'in', 'USER SWITCH', `${prev} → ${raw}`);
+  applyIdentity(raw);
+  addLog(0, 'in', 'SESSION START', `${raw} · Role: ${currentUser.role}`);
+  closeSwitchUser(); persist();
+}
+
+// Wire onboarding UI after DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('id-name-input');
+  const btn = document.getElementById('id-confirm-btn');
+  if (inp && btn) {
+    inp.addEventListener('input', () => { btn.disabled = inp.value.trim().length < 3; });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !btn.disabled) confirmIdentity(); });
+  }
+  const sw = document.getElementById('switch-name-input');
+  if (sw) sw.addEventListener('keydown', e => { if (e.key === 'Enter') applySwitchUser(); });
+  // Restore saved user
+  try {
+    const saved = JSON.parse(localStorage.getItem('ops_kp_user') || 'null');
+    if (saved?.name) { applyIdentity(saved.name); document.getElementById('id-overlay').style.display = 'none'; }
+  } catch(e) {}
+});
+
+// ─── FLEET MANAGEMENT CRUD ────────────────────────────────
+let fleetEditingId = null; // null = add mode, number = edit mode
+
+function openFleetMgr() {
+  renderFleetMgrList();
+  document.getElementById('ov-fleet-mgr').classList.add('open');
+}
+function closeFleetMgr() {
+  document.getElementById('ov-fleet-mgr').classList.remove('open');
+}
+function renderFleetMgrList() {
+  const list = document.getElementById('fleet-mgr-list');
+  const active = vehicles.filter(v => !v.nil);
+  const nil = vehicles.filter(v => v.nil);
+  const all = [...active, ...nil];
+  document.getElementById('fleet-mgr-count').textContent = `${active.length} active · ${nil.length} NIL`;
+  const statusDot = (id, isNil) => {
+    if (isNil) return `<span class="fmv-status-dot" style="background:var(--nil)"></span>`;
+    const s = state[id]?.status || 'in';
+    const col = {in:'var(--in)', out:'var(--out)', offrun:'var(--offrun)'}[s] || 'var(--nil)';
+    return `<span class="fmv-status-dot" style="background:${col}"></span>`;
+  };
+  list.innerHTML = all.map(v => `
+    <div class="fmv-row${v.nil?' fmv-nil-row':''}">
+      <div class="fmv-keyno">${v.bunchNo||'—'}</div>
+      <div class="fmv-ico">${v.nil?'⊘':ico(v.vehicle)}</div>
+      <div class="fmv-info">
+        <div class="fmv-name">${v.vehicle}${v.nil?' <span style="font-size:9px;color:var(--nil-text);font-weight:400;">[NIL]</span>':''}</div>
+        <div class="fmv-reg">${v.reg}</div>
+        <div class="fmv-loc">📍 ${state[v.id]?.location||v.location||'—'}</div>
+      </div>
+      <div class="fmv-status">${statusDot(v.id, !!v.nil)}</div>
+      <div class="fmv-actions">
+        <button class="fmv-btn edit-btn" onclick="openVehForm(${v.id})">✏ Edit</button>
+        <button class="fmv-btn del-btn" onclick="deleteVehicle(${v.id})" ${(!v.nil && state[v.id]?.status!=='in')?'title="Vehicle is currently out or off-run — return it first"':''}>🗑 Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openVehForm(id) {
+  fleetEditingId = id;
+  const isEdit = id !== null;
+  document.getElementById('veh-form-title').textContent = isEdit ? 'Edit Vehicle' : 'Add Vehicle';
+  if (isEdit) {
+    const v = vehicles.find(x => x.id === id);
+    document.getElementById('vf-name').value = v.vehicle;
+    document.getElementById('vf-bunchno').value = v.bunchNo || '';
+    document.getElementById('vf-reg').value = v.reg;
+    document.getElementById('vf-loc').value = state[id]?.location || v.location || '';
+    document.getElementById('vf-nil').checked = !!v.nil;
+    document.getElementById('veh-form-sub').textContent = `Editing: ${v.vehicle} · ${v.reg}`;
+  } else {
+    ['vf-name','vf-bunchno','vf-reg','vf-loc'].forEach(f => { document.getElementById(f).value = ''; });
+    document.getElementById('vf-nil').checked = false;
+    document.getElementById('veh-form-sub').textContent = 'New fleet entry';
+  }
+  document.getElementById('veh-form-save-btn').textContent = isEdit ? 'Save Changes' : 'Add Vehicle';
+  document.getElementById('ov-veh-form').classList.add('open');
+}
+function closeVehForm() {
+  document.getElementById('ov-veh-form').classList.remove('open');
+  fleetEditingId = null;
+}
+function saveVehForm() {
+  const name = document.getElementById('vf-name').value.trim();
+  const reg = document.getElementById('vf-reg').value.trim();
+  const bunchNo = document.getElementById('vf-bunchno').value.trim();
+  const loc = document.getElementById('vf-loc').value.trim();
+  const isNil = document.getElementById('vf-nil').checked;
+  if (!name) { alert('Vehicle name is required.'); return; }
+  if (!reg)  { alert('Registration / call sign is required.'); return; }
+
+  if (fleetEditingId !== null) {
+    // ── EDIT ──
+    const id = fleetEditingId;
+    const v = vehicles.find(x => x.id === id);
+    const changes = [];
+    if (v.vehicle !== name)   changes.push(`Name: "${v.vehicle}" → "${name}"`);
+    if (v.reg !== reg)        changes.push(`Reg: "${v.reg}" → "${reg}"`);
+    if ((v.bunchNo||'') !== bunchNo) changes.push(`Key#: "${v.bunchNo||'—'}" → "${bunchNo||'—'}"`);
+    if ((state[id]?.location||v.location||'') !== loc) changes.push(`Loc: "${state[id]?.location||v.location||'—'}" → "${loc||'—'}"`);
+    const wasNil = !!v.nil;
+    if (wasNil !== isNil) changes.push(isNil ? 'Marked NIL' : 'Restored from NIL');
+    v.vehicle = name; v.reg = reg; v.bunchNo = bunchNo;
+    if (state[id]) state[id].location = loc || state[id].location;
+    v.location = loc || v.location;
+    v.nil = isNil || undefined;
+    if (!isNil) delete v.nil;
+    if (changes.length) {
+      addLog(id, state[id]?.status || 'in', 'FLEET EDIT', changes.join(' · '));
+    }
+  } else {
+    // ── ADD ──
+    const newId = Math.max(0, ...vehicles.map(x => x.id)) + 1;
+    const newVeh = { id: newId, vehicle: name, reg, location: loc || 'YARD', bunchNo };
+    if (isNil) newVeh.nil = true;
+    vehicles.push(newVeh);
+    state[newId] = { status: 'in', since: Date.now(), location: loc || 'YARD', remarks: '', offrunReason: '', offrunFrom: '', offrunUntil: '' };
+    addLog(newId, 'in', 'FLEET ADDED', `${name} · ${reg}${bunchNo?' · Key #'+bunchNo:''}${isNil?' · [NIL]':''}`);
+  }
+  closeVehForm();
+  renderFleetMgrList();
+  renderAll();
+  persist();
+}
+function deleteVehicle(id) {
+  const v = vehicles.find(x => x.id === id);
+  if (!v) return;
+  const st = state[id];
+  if (st && st.status !== 'in') {
+    alert(`Cannot delete ${v.vehicle}: it is currently "${st.status}". Return or restore it to keypress first.`);
+    return;
+  }
+  if (!confirm(`Delete "${v.vehicle}" (${v.reg}) from the fleet?\n\nKey #${v.bunchNo||'N/A'} will be permanently removed. Its audit log entries will be kept.\n\nThis cannot be undone.`)) return;
+  addLog(id, 'in', 'FLEET DELETED', `${v.vehicle} · ${v.reg}${v.bunchNo?' · Key #'+v.bunchNo:''} — removed from fleet`);
+  const idx = vehicles.indexOf(v);
+  if (idx > -1) vehicles.splice(idx, 1);
+  delete state[id];
+  delete records[id];
+  renderFleetMgrList();
+  renderAll();
+  persist();
+}
+
+// ─── PERSIST: save custom vehicles too ────────────────────
+// (Override persist to also save vehicles array)
+const _origPersist = persist;
+// Redefine persist to also save vehicles
+function persist(){
+  try{
+    localStorage.setItem(SK, JSON.stringify({
+      state: Object.fromEntries(Object.entries(state)),
+      records, auditLog: auditLog.slice(0,500),
+      viewMode, sortMode, sortDir, filterMode,
+      locs: vehicles.map(v=>({id:v.id, loc:v.location})),
+      customVehicles: vehicles,
+      kpStatus, kpLog: kpLog.slice(0,200)
+    }));
+  }catch(e){}
+}
+// ─── HYDRATE: restore custom vehicles ─────────────────────
+const _origHydrate = hydrate;
+// patch hydrate to restore customVehicles
+(function patchHydrate(){
+  const origH = hydrate;
+  window._hydratePatched = function(){
+    try{
+      const d = JSON.parse(localStorage.getItem(SK)||'null');
+      if(!d) return;
+      // Restore custom vehicles if saved
+      if(d.customVehicles && Array.isArray(d.customVehicles) && d.customVehicles.length){
+        vehicles.length = 0;
+        d.customVehicles.forEach(v => vehicles.push(v));
+      }
+      (d.locs||[]).forEach(l=>{const v=vehicles.find(x=>x.id===l.id);if(v)v.location=l.loc;});
+      // Init state for any vehicles missing state
+      vehicles.forEach(v=>{
+        if(!state[v.id]) state[v.id]={status:'in',since:Date.now(),location:v.location,remarks:'',offrunReason:'',offrunFrom:'',offrunUntil:''};
+      });
+      Object.entries(d.state||{}).forEach(([k,s])=>{const id=+k;if(state[id])Object.assign(state[id],s);});
+      if(d.records) Object.assign(records,d.records);
+      if(d.auditLog) auditLog.push(...d.auditLog);
+      if(d.viewMode) viewMode=d.viewMode;
+      if(d.sortMode) sortMode=d.sortMode;
+      if(d.sortDir)  sortDir=d.sortDir;
+      if(d.filterMode) filterMode=d.filterMode;
+      // Restore keypress open/close state
+      if(d.kpStatus) kpStatus = d.kpStatus;
+      if(d.kpLog) kpLog = d.kpLog;
+    }catch(e){}
+  };
+})();
+
+// ─── REMARKS: audit log on save ──────────────────────────
+function saveRemarksInline(id){
+  const inp=document.getElementById('rmki-'+id);if(!inp)return;
+  const oldVal=(state[id].remarks||'').trim();
+  const newVal=inp.value.trim();
+  state[id].remarks=newVal;
+  if(newVal!==oldVal){
+    const v=vehicles.find(x=>x.id===id);
+    if(v){
+      if(newVal) addLog(id,state[id].status,'REMARK UPDATED',`"${newVal}"${oldVal?' (was: "'+oldVal+'")':''}`);
+      else       addLog(id,state[id].status,'REMARK CLEARED',oldVal?`Was: "${oldVal}"`:'');
+    }
+  }
+  cancelRemarksInline(id);renderAll();persist();
+}
+function clearRemarksInline(id){
+  const oldVal=(state[id].remarks||'').trim();
+  state[id].remarks='';
+  const inp=document.getElementById('rmki-'+id);if(inp)inp.value='';
+  if(oldVal){
+    const v=vehicles.find(x=>x.id===id);
+    if(v) addLog(id,state[id].status,'REMARK CLEARED',`Was: "${oldVal}"`);
+  }
+  cancelRemarksInline(id);renderAll();persist();
+}
+
+// ─── OFF-RUN: detailed audit log ─────────────────────────
+function applyOffrun(){
+  if(!pendingId)return;const id=pendingId;
+  const st=state[id];
+  const v=vehicles.find(x=>x.id===id);
+  const oldReason=st.offrunReason||'';
+  const oldFrom=st.offrunFrom||'';
+  const oldUntil=st.offrunUntil||'';
+  const newReason=document.getElementById('or-reason').value.trim();
+  const newFrom=document.getElementById('or-from').value;
+  const newUntil=document.getElementById('or-until').value;
+  const wasOffrun = st.status==='offrun';
+  st.offrunReason=newReason;
+  st.offrunFrom=newFrom;
+  st.offrunUntil=newUntil;
+  st.status='offrun';st.since=Date.now();
+  const detail=`${newReason||'(no reason)'}${newFrom?' · From: '+fmtD(newFrom):''}${newUntil?' · Until: '+fmtD(newUntil):' · Until: TBD'}`;
+  if(wasOffrun){
+    // Editing existing off-run — log the update
+    const changes=[];
+    if(newReason!==oldReason) changes.push(`Reason: "${oldReason||'—'}" → "${newReason||'—'}"`);
+    if(newFrom!==oldFrom)     changes.push(`From: "${oldFrom?fmtD(oldFrom):'—'}" → "${newFrom?fmtD(newFrom):'—'}"`);
+    if(newUntil!==oldUntil)   changes.push(`Until: "${oldUntil?fmtD(oldUntil):'TBD'}" → "${newUntil?fmtD(newUntil):'TBD'}"`);
+    addLog(id,'offrun','OFF-RUN UPDATED', changes.length?changes.join(' · '):detail);
+  } else {
+    addLog(id,'offrun','OFF-RUN',detail);
+  }
+  closeOffrun();renderAll();persist();
+}
+
+// ─── BACK TO KEYPRESS: log reason ────────────────────────
+const _origSetStatusDirect = setStatusDirect;
+function setStatusDirect(id,newStatus){
+  const st=state[id];
+  const wasOffrun=st.status==='offrun';
+  if(newStatus==='in'){
+    if(wasOffrun){
+      addLog(id,'in','RETURNED FROM OFF-RUN',`${st.offrunReason||'Off-run cleared'}${st.offrunFrom?' · Was from '+fmtD(st.offrunFrom):''}${st.offrunUntil?' · Until '+fmtD(st.offrunUntil):''}`);
+    }
+    delete records[id];st.offrunReason='';st.offrunFrom='';st.offrunUntil='';
+  }
+  st.status=newStatus;st.since=Date.now();
+  if(newStatus!=='in'&&!wasOffrun) addLog(id,newStatus,statusLabel(st));
+  renderAll();persist();
+}
+
+// ─── KEYPRESS OPEN / CLOSE SYSTEM ────────────────────────
+// State: kpStatus = 'open' | 'closed'
+// kpLog: array of { action, ts, by, driver, driverSig, early, earlyReason, specialPurpose }
+let kpStatus = 'open';
+let kpLog = [];
+
+function kpIsLocked() { return kpStatus === 'closed'; }
+
+// Block all key actions when closed
+function kpGuard() {
+  if (!kpIsLocked()) return false; // not locked, allow
+  alert('Keypress is closed.\nOpen the keypress first before making any changes.');
+  return true; // locked, block
+}
+
+// ── CLOSE modal ──────────────────────────────────────────
+function openKpCloseModal() {
+  // Warn if keys are still out
+  const out = vehicles.filter(v => !v.nil && state[v.id]?.status === 'out');
+  if (out.length) {
+    const names = out.map(v => `${v.vehicle} (Key #${v.bunchNo})`).join(', ');
+    if (!confirm(`⚠ ${out.length} key(s) are still loaned out:\n${names}\n\nYou should return all keys before closing.\n\nClose anyway?`)) return;
+  }
+  document.getElementById('kp-close-driver').value = '';
+  document.getElementById('kp-close-early-chk').checked = false;
+  document.getElementById('kp-close-early-reason').value = '';
+  document.getElementById('kp-early-reason-row').classList.remove('visible');
+  reinitSig('sig-kp-close');
+  document.getElementById('ov-kp-close').classList.add('open');
+  setTimeout(() => document.getElementById('kp-close-driver').focus(), 80);
+}
+function closeKpCloseModal() { document.getElementById('ov-kp-close').classList.remove('open'); }
+function toggleCloseEarly() {
+  const checked = document.getElementById('kp-close-early-chk').checked;
+  document.getElementById('kp-early-reason-row').classList.toggle('visible', checked);
+}
+function applyKpClose() {
+  const driver = (document.getElementById('kp-close-driver').value || '').trim().toUpperCase();
+  if (!driver) { alert('Please enter the transport driver\'s rank and name.'); return; }
+  const sig = getSigDataURL('sig-kp-close');
+  if (!sig) { alert('Driver signature is required to close the keypress.'); return; }
+  const isEarly = document.getElementById('kp-close-early-chk').checked;
+  const earlyReason = (document.getElementById('kp-close-early-reason').value || '').trim();
+  const ts = Date.now();
+  kpStatus = 'closed';
+  const entry = { action: 'CLOSE', ts, by: currentUser?.name || 'UNKNOWN', driver, driverSig: sig, early: isEarly, earlyReason };
+  kpLog.push(entry);
+  // Audit log
+  const detail = `Driver: ${driver}${isEarly ? ' · EARLY CLOSE' : ''}${earlyReason ? ' · ' + earlyReason : ''}`;
+  addLog(0, 'in', 'KEYPRESS CLOSED', detail);
+  closeKpCloseModal();
+  showKpLockedOverlay();
+  persist();
+}
+
+// ── OPEN modal ───────────────────────────────────────────
+function openKpOpenModal() {
+  // Check if this is a same-day re-open after early close
+  const lastClose = [...kpLog].reverse().find(e => e.action === 'CLOSE');
+  const isSameDay = lastClose && new Date(lastClose.ts).toDateString() === new Date().toDateString() && lastClose.early;
+  const specialSection = document.getElementById('kp-special-section');
+  specialSection.style.display = isSameDay ? '' : 'none';
+  document.getElementById('kp-open-modal-title').textContent = isSameDay ? '⚠️ Re-Open Keypress (Same Day)' : '🔓 Open Keypress';
+  document.getElementById('kp-open-modal-sub').textContent = isSameDay ? 'Keypress was closed early today — state special purpose' : 'Transport driver sign-off to start the day';
+  document.getElementById('kp-open-driver').value = '';
+  document.getElementById('kp-reopen-special-chk').checked = false;
+  document.getElementById('kp-open-special-purpose').value = '';
+  document.getElementById('kp-special-purpose-row').classList.remove('visible');
+  reinitSig('sig-kp-open');
+  document.getElementById('ov-kp-open').classList.add('open');
+  setTimeout(() => document.getElementById('kp-open-driver').focus(), 80);
+}
+function closeKpOpenModal() { document.getElementById('ov-kp-open').classList.remove('open'); }
+function toggleSpecialReopen() {
+  const checked = document.getElementById('kp-reopen-special-chk').checked;
+  document.getElementById('kp-special-purpose-row').classList.toggle('visible', checked);
+}
+function applyKpOpen() {
+  const driver = (document.getElementById('kp-open-driver').value || '').trim().toUpperCase();
+  if (!driver) { alert('Please enter the transport driver\'s rank and name.'); return; }
+  const sig = getSigDataURL('sig-kp-open');
+  if (!sig) { alert('Driver signature is required to open the keypress.'); return; }
+  // Check if same-day re-open — require special purpose checkbox
+  const lastClose = [...kpLog].reverse().find(e => e.action === 'CLOSE');
+  const isSameDay = lastClose && new Date(lastClose.ts).toDateString() === new Date().toDateString() && lastClose.early;
+  const specialChecked = document.getElementById('kp-reopen-special-chk').checked;
+  const specialPurpose = (document.getElementById('kp-open-special-purpose').value || '').trim();
+  if (isSameDay && !specialChecked) {
+    alert('This keypress was closed early today.\nPlease check the "Re-opening" box and state a special purpose.'); return;
+  }
+  if (isSameDay && specialChecked && !specialPurpose) {
+    alert('Please enter the special purpose / reason for re-opening.'); return;
+  }
+  const ts = Date.now();
+  kpStatus = 'open';
+  const entry = { action: 'OPEN', ts, by: currentUser?.name || 'UNKNOWN', driver, driverSig: sig, specialPurpose: specialPurpose || null };
+  kpLog.push(entry);
+  const detail = `Driver: ${driver}${specialPurpose ? ' · SPECIAL: ' + specialPurpose : ''}`;
+  addLog(0, 'in', isSameDay ? 'KEYPRESS REOPENED (SPECIAL)' : 'KEYPRESS OPENED', detail);
+  closeKpOpenModal();
+  hideKpLockedOverlay();
+  persist();
+}
+
+// ── Locked overlay ────────────────────────────────────────
+function showKpLockedOverlay() {
+  const ov = document.getElementById('kp-locked-overlay');
+  const lastClose = [...kpLog].reverse().find(e => e.action === 'CLOSE');
+  if (lastClose) {
+    document.getElementById('kp-closed-at-val').textContent = fmtDT(lastClose.ts);
+    document.getElementById('kp-closed-by-val').textContent = lastClose.by || '—';
+    document.getElementById('kp-closed-driver-val').textContent = lastClose.driver || '—';
+    const earlyRow = document.getElementById('kp-early-row');
+    earlyRow.style.display = lastClose.early ? '' : 'none';
+  }
+  ov.style.display = 'flex';
+  document.getElementById('kp-close-bar').style.display = 'none';
+}
+function hideKpLockedOverlay() {
+  document.getElementById('kp-locked-overlay').style.display = 'none';
+  document.getElementById('kp-close-bar').style.display = '';
+  renderAll();
+}
+
+// ── Patch all action functions to check kpGuard ──────────
+const _kpGuardedFns = ['openIssue','openQuickIssue','openReturn','openOffrun','openBulkModal'];
+// We apply the guard inside each opener via the guard check pattern:
+// Wrap openIssue, openQuickIssue, openReturn, openOffrun, openBulkModal
+(function(){
+  const origOpenIssue = openIssue;
+  openIssue = function(id){ if(kpGuard()) return; origOpenIssue(id); };
+  const origOpenQuick = openQuickIssue;
+  openQuickIssue = function(id){ if(kpGuard()) return; origOpenQuick(id); };
+  const origOpenReturn = openReturn;
+  openReturn = function(id){ if(kpGuard()) return; origOpenReturn(id); };
+  const origOpenOffrun = openOffrun;
+  openOffrun = function(id){ if(kpGuard()) return; origOpenOffrun(id); };
+  const origBulk = openBulkModal;
+  openBulkModal = function(){ if(kpGuard()) return; origBulk(); };
+})();
+
+// ── Persist / hydrate kpStatus and kpLog ─────────────────
+// (handled by patching persist/hydrate below — already done via _hydratePatched)
+
+// ─── INIT HOOK: run patched hydrate ──────────────────────
+window._hydratePatched && window._hydratePatched();
+
+// Show locked overlay handled in DOMContentLoaded below
+
+renderAll();
+tick();
+setInterval(tick, 1000);
+
 initAllSigs();
+// Init close/open sig pads and restore locked state after DOM is fully parsed
+document.addEventListener('DOMContentLoaded', () => {
+  initSig('sig-kp-close');
+  initSig('sig-kp-open');
+  if (kpStatus === 'closed') showKpLockedOverlay();
+});
 </script>
+
+<!-- ── KEYPRESS LOCKED OVERLAY ── -->
+<div class="kp-locked-overlay" id="kp-locked-overlay" style="display:none;">
+  <div class="kp-locked-panel">
+    <div class="kp-locked-hero">
+      <div class="kp-locked-icon">🔒</div>
+      <div class="kp-locked-title">Keypress Closed</div>
+      <div class="kp-locked-sub" id="kp-locked-sub">Signed off for the day. Open to resume operations.</div>
+    </div>
+    <div class="kp-locked-meta">
+      <div class="kp-meta-row"><span class="kp-meta-lbl">Closed at</span><span class="kp-meta-val" id="kp-closed-at-val">—</span></div>
+      <div class="kp-meta-row"><span class="kp-meta-lbl">Closed by</span><span class="kp-meta-val" id="kp-closed-by-val">—</span></div>
+      <div class="kp-meta-row"><span class="kp-meta-lbl">Driver (Transport)</span><span class="kp-meta-val" id="kp-closed-driver-val">—</span></div>
+      <div class="kp-meta-row" id="kp-early-row" style="display:none;"><span class="kp-meta-lbl">Note</span><span class="kp-meta-val" style="color:var(--offrun);">Closed early (pre-midnight)</span></div>
+    </div>
+    <div class="kp-locked-body">
+      <button class="kp-open-btn" id="kp-open-btn" onclick="openKpOpenModal()">🔓 Open Keypress</button>
+      <div class="kp-reopen-note" id="kp-reopen-note">
+        Transport driver must sign off to open.<br>
+        If you need emergency access, state a special purpose below.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CLOSE KEYPRESS MODAL ── -->
+<div class="overlay" id="ov-kp-close" onclick="if(event.target===this)closeKpCloseModal()">
+  <div class="modal" style="width:min(480px,100%);">
+    <div class="mhdr">
+      <div>
+        <div class="mtitle">🔒 Close Keypress</div>
+        <div class="msub" id="kp-close-modal-sub">Sign off to close for the day</div>
+      </div>
+      <button class="mclose" onclick="closeKpCloseModal()">Cancel</button>
+    </div>
+    <div class="mbody">
+      <div class="fsec-block sec-ret">
+        <div class="fsec-title ret-t"><span class="sec-icon">🚗</span>Transport Driver Sign-Off</div>
+        <div class="fg">
+          <label class="fl">Driver Rank &amp; Name</label>
+          <input class="fi" id="kp-close-driver" placeholder="e.g. CPL MUHAMMAD HAKIM" autocomplete="off" autocapitalize="characters">
+        </div>
+        <div class="fg" style="margin-top:10px;">
+          <label class="fl">Driver Signature</label>
+          <div class="sig-wrap" id="sig-wrap-kp-close">
+            <canvas class="sig-canvas" id="sig-kp-close" height="110"></canvas>
+            <div class="sig-placeholder" id="sig-ph-kp-close"><span>✍ Driver signs here</span></div>
+            <div class="sig-actions"><button class="sig-clear" onclick="clearSig('sig-kp-close')">Clear</button></div>
+          </div>
+          <div class="sig-label" id="sig-lbl-kp-close">Draw signature above</div>
+        </div>
+      </div>
+      <div class="fsec-block sec-neutral" style="border-bottom:none;">
+        <div class="fsec-title" style="color:var(--text-dim);"><span class="sec-icon">📋</span>Options</div>
+        <div class="kp-chk-row">
+          <input type="checkbox" id="kp-close-early-chk" onchange="toggleCloseEarly()">
+          <label class="kp-chk-lbl" for="kp-close-early-chk"><strong>Closing early</strong> (before midnight) — e.g. night duty ends at 8pm, keys won't be needed until tomorrow</label>
+        </div>
+        <div class="fg kp-special-row" id="kp-early-reason-row">
+          <label class="fl" style="margin-top:8px;">Early Close Reason</label>
+          <input class="fi" id="kp-close-early-reason" placeholder="e.g. Night duty standdown, low ops tempo" autocomplete="off">
+        </div>
+        <div class="fhint" style="margin-top:8px;">Timestamp is always recorded automatically. All keys must be returned before closing.</div>
+      </div>
+    </div>
+    <div class="mfooter">
+      <button class="bcancel" onclick="closeKpCloseModal()">Cancel</button>
+      <button class="bprimary bp-offrun" onclick="applyKpClose()">Confirm Close Keypress</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── OPEN KEYPRESS MODAL ── -->
+<div class="overlay" id="ov-kp-open" onclick="if(event.target===this)closeKpOpenModal()">
+  <div class="modal" style="width:min(480px,100%);">
+    <div class="mhdr">
+      <div>
+        <div class="mtitle" id="kp-open-modal-title">🔓 Open Keypress</div>
+        <div class="msub" id="kp-open-modal-sub">Transport driver sign-off required</div>
+      </div>
+      <button class="mclose" onclick="closeKpOpenModal()">Cancel</button>
+    </div>
+    <div class="mbody">
+      <div class="fsec-block sec-ops">
+        <div class="fsec-title ops-t"><span class="sec-icon">🚗</span>Transport Driver Sign-Off</div>
+        <div class="fg">
+          <label class="fl">Driver Rank &amp; Name</label>
+          <input class="fi" id="kp-open-driver" placeholder="e.g. SGT RAHMAN BIN ALI" autocomplete="off" autocapitalize="characters">
+        </div>
+        <div class="fg" style="margin-top:10px;">
+          <label class="fl">Driver Signature</label>
+          <div class="sig-wrap" id="sig-wrap-kp-open">
+            <canvas class="sig-canvas" id="sig-kp-open" height="110"></canvas>
+            <div class="sig-placeholder" id="sig-ph-kp-open"><span>✍ Driver signs here</span></div>
+            <div class="sig-actions"><button class="sig-clear" onclick="clearSig('sig-kp-open')">Clear</button></div>
+          </div>
+          <div class="sig-label" id="sig-lbl-kp-open">Draw signature above</div>
+        </div>
+      </div>
+      <div class="fsec-block sec-neutral" id="kp-special-section" style="border-bottom:none;display:none;">
+        <div class="fsec-title" style="color:var(--out);"><span class="sec-icon">⚠️</span>Special Re-Opening</div>
+        <div class="kp-chk-row">
+          <input type="checkbox" id="kp-reopen-special-chk" onchange="toggleSpecialReopen()">
+          <label class="kp-chk-lbl" for="kp-reopen-special-chk"><strong>Re-opening after early close</strong> — keys are needed on the same day despite earlier close</label>
+        </div>
+        <div class="fg kp-special-row" id="kp-special-purpose-row">
+          <label class="fl" style="margin-top:8px;">Special Purpose / Reason</label>
+          <input class="fi" id="kp-open-special-purpose" placeholder="e.g. Urgent SCDF ops deployment, emergency standby" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <div class="mfooter">
+      <button class="bcancel" onclick="closeKpOpenModal()">Cancel</button>
+      <button class="bprimary bp-in" id="kp-open-confirm-btn" onclick="applyKpOpen()">Open Keypress</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ONBOARDING / IDENTITY MODAL ── -->
+<div class="id-overlay" id="id-overlay">
+  <div class="id-panel">
+    <div class="id-hero">
+      <div class="id-logo">🔑</div>
+      <div class="id-title">OPS Keypress</div>
+      <div class="id-sub">Station Vehicle Key Management System</div>
+    </div>
+    <div class="id-body">
+      <label class="id-label" for="id-name-input">Your Rank &amp; Name</label>
+      <input class="id-input" id="id-name-input" placeholder="e.g. CPL TAN WEI LIANG" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60">
+      <div class="id-hint">
+        Enter your <strong>full rank and name</strong> as it appears on official records.<br>
+        This will be stamped on every audit log entry you make.<br><br>
+        ⚠ <strong>Use your real name.</strong> All actions are logged and can be verified by your OIC.
+      </div>
+      <button class="id-confirm-btn" id="id-confirm-btn" onclick="confirmIdentity()" disabled>Confirm &amp; Enter</button>
+    </div>
+    <div class="id-footer">
+      <div class="id-footer-txt">
+        This system runs locally on this device.<br>
+        Your name is saved to this browser only — it does not transmit to any server.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SWITCH USER MODAL ── -->
+<div class="overlay" id="ov-switch-user" onclick="if(event.target===this)closeSwitchUser()">
+  <div class="modal switch-user-panel">
+    <div class="mhdr">
+      <div><div class="mtitle">Change User</div><div class="msub" id="switch-user-sub">Currently signed in as —</div></div>
+      <button class="mclose" onclick="closeSwitchUser()">Cancel</button>
+    </div>
+    <div class="mbody">
+      <div class="fsec-block sec-key" style="border-bottom:none;">
+        <div class="fsec-title key-t"><span class="sec-icon">👤</span>New User</div>
+        <div class="fg">
+          <label class="fl">Rank &amp; Name</label>
+          <input class="fi" id="switch-name-input" placeholder="e.g. SGT MUHAMMAD HAFIZ" autocomplete="off" autocapitalize="characters" maxlength="60">
+        </div>
+        <div class="fhint" style="margin-top:6px;">This change will be recorded in the audit log.</div>
+      </div>
+    </div>
+    <div class="mfooter">
+      <button class="bcancel" onclick="closeSwitchUser()">Cancel</button>
+      <button class="bprimary" style="background:var(--accent);" onclick="applySwitchUser()">Switch User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── FLEET MANAGER MODAL ── -->
+<div class="log-overlay" id="ov-fleet-mgr" onclick="if(event.target===this)closeFleetMgr()">
+  <div class="modal fleet-mgr-panel">
+    <div class="mhdr">
+      <div><div class="mtitle">Fleet Management</div><div class="msub" id="fleet-mgr-sub">Manage vehicles — all changes are audit logged</div></div>
+      <button class="mclose" onclick="closeFleetMgr()">Close</button>
+    </div>
+    <div class="fleet-mgr-list" id="fleet-mgr-list"></div>
+    <div class="fleet-mgr-add-bar">
+      <span id="fleet-mgr-count"></span>
+      <button class="badd" onclick="openVehForm(null)">+ Add Vehicle</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── VEHICLE ADD / EDIT MODAL ── -->
+<div class="overlay veh-form-overlay" id="ov-veh-form" onclick="if(event.target===this)closeVehForm()">
+  <div class="modal" style="width:460px;">
+    <div class="mhdr">
+      <div><div class="mtitle" id="veh-form-title">Add Vehicle</div><div class="msub" id="veh-form-sub">New fleet entry</div></div>
+      <button class="mclose" onclick="closeVehForm()">Cancel</button>
+    </div>
+    <div class="mbody">
+      <div class="fsec-block sec-key">
+        <div class="fsec-title key-t"><span class="sec-icon">🚗</span>Vehicle Identity</div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Vehicle Name / Type</label><input class="fi" id="vf-name" placeholder="e.g. TONNER, P3 MINIBUS, FCV" autocomplete="off"></div>
+          <div class="fg"><label class="fl">Key Bunch No.</label><input class="fi" id="vf-bunchno" placeholder="e.g. 7 or CDA1" autocomplete="off"></div>
+        </div>
+        <div class="frow" style="margin-top:10px;">
+          <div class="fg"><label class="fl">Registration / Call Sign</label><input class="fi" id="vf-reg" placeholder="e.g. YP4727E or BLACKBOX" autocomplete="off"></div>
+          <div class="fg"><label class="fl">Default Location</label><input class="fi" id="vf-loc" placeholder="e.g. YARD, BASEMENT, CDA" autocomplete="off"></div>
+        </div>
+      </div>
+      <div class="fsec-block sec-neutral" style="border-bottom:none;">
+        <div class="fsec-title" style="color:var(--text-dim);"><span class="sec-icon">⚙️</span>Options</div>
+        <div class="nil-toggle-row">
+          <span class="nil-toggle-lbl">Mark as NIL / Unavailable<br><span style="font-size:9px;color:var(--text-muted);font-weight:400;">NIL vehicles are greyed out and cannot be issued. Use for spare key slots.</span></span>
+          <label class="nil-toggle"><input type="checkbox" id="vf-nil"><span class="nil-toggle-track"></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="mfooter">
+      <button class="bcancel" onclick="closeVehForm()">Cancel</button>
+      <button class="bprimary bp-fleet" id="veh-form-save-btn" onclick="saveVehForm()">Save Vehicle</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── SIG ZOOM OVERLAY ── -->
 <div class="sig-zoom-overlay" id="sig-zoom-ov" onclick="this.classList.remove('open')">
