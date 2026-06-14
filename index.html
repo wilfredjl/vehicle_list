@@ -1063,7 +1063,8 @@ function sw(ts){
 function statusLabel(st){return{in:'IN KEYPRESS',out:'LOANED OUT',offrun:'OFF-RUN'}[st.status]||'—';}
 function addLog(id,toStatus,toLabel,detail='',recSnapshot=null){
   const v=vehicles.find(x=>x.id===id);
-  const by=currentUser?.name||null;
+  const by=_actionBy||null;
+  _actionBy=null; // reset after use
   auditLog.unshift({ts:Date.now(),id,toStatus,toLabel,vehicle:v?v.vehicle:'SYSTEM',reg:v?v.reg:'',detail,rec:recSnapshot,by});
 }
 
@@ -1546,6 +1547,7 @@ function applyIssue(){
   };
   records[id]=rec;
   state[id].status='out';state[id].since=Date.now();
+  actingAs(bname);
   addLog(id,'out',`LOANED OUT → ${bname}`,`Keys: ${rec.keyCount||'?'}${rec.purpose?' · '+rec.purpose:''}`,JSON.parse(JSON.stringify(rec)));
   closeIssue();renderAll();persist();
 }
@@ -1566,6 +1568,7 @@ function applyQuickIssue(){
   if(!name){alert('Name required.');return;}
   const rec={type:'quick',issuedAt:Date.now(),takenBy:name,borrowerName:name,purpose:document.getElementById('q-purpose').value.trim(),remarks:document.getElementById('q-remarks').value.trim()};
   records[id]=rec;state[id].status='out';state[id].since=Date.now();
+  actingAs(name);
   addLog(id,'out',`LOANED OUT (QUICK) → ${name}`,rec.purpose||'Informal issue',JSON.parse(JSON.stringify(rec)));
   closeQuick();renderAll();persist();
 }
@@ -1627,6 +1630,7 @@ function applyReturn(){
   const returnDateStr=new Date(returnedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
   const baseDetail=`Keys: ${returnRec.returnKeyCount||'?'} · Condition: ${returnRec.condition} · OPS: ${returnRec.returnOpsName||'—'}`;
   const returnDetail=crossMidnight?`${baseDetail} · Returned: ${returnDateStr}`:baseDetail;
+  actingAs(rname);
   addLog(id,'in',`RETURNED TO KEYPRESS by ${rname}`,returnDetail,fullSnap);
   // Back-fill the original issue log entry with the return date
   if(crossMidnight&&issueRec){
@@ -2085,98 +2089,38 @@ document.addEventListener('click',e=>{
   }
 });
 
-// ─── IDENTITY & ROLES ────────────────────────────────────
-// Edit this list to grant admin access. Names are checked case-insensitively.
-const ADMIN_NAMES = [
-  // Add exact rank+name strings your admins will enter at login, e.g.:
-  // 'SGT TAN WEI LIANG',
-  // 'CPL AHMAD FIRDAUS BIN SAID',
-  'ADMIN', // dev shortcut — remove before going live
-];
+// ─── ADMIN PIN ────────────────────────────────────────────
+// Change this to your own PIN before going live
+const ADMIN_PIN = '1234';
+let adminUnlocked = false;
 
-let currentUser = null; // { name, role: 'admin'|'user' }
-
-function isAdmin(name) {
-  return ADMIN_NAMES.some(a => a.toUpperCase() === (name || '').toUpperCase().trim());
-}
-function avatarColor(name) {
-  const cols = ['#5b8fd4','#9b81e8','#4ade80','#fb923c','#a78bfa','#38b2c8','#e05252','#d4a04a'];
-  let h = 0; for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
-  return cols[Math.abs(h) % cols.length];
-}
-function avatarInitials(name) {
-  const ranks = ['SGT','CPL','WO1','WO2','WO3','LTA','CPT','MAJ','LTC','COL','REC','PTE','SSG','MSG','3SG','2SG','1SG'];
-  const parts = name.trim().split(/\s+/);
-  const nonRank = parts.filter(p => !ranks.includes(p.toUpperCase()));
-  if (nonRank.length >= 2) return (nonRank[0][0] + nonRank[1][0]).toUpperCase();
-  return (nonRank[0] || parts[0])[0].toUpperCase();
+function checkAdminPin(onSuccess) {
+  if (adminUnlocked) { onSuccess(); return; }
+  const pin = prompt('Admin PIN:');
+  if (pin === null) return;
+  if (pin === ADMIN_PIN) { adminUnlocked = true; onSuccess(); }
+  else alert('Incorrect PIN.');
 }
 
-function applyIdentity(name) {
-  const role = isAdmin(name) ? 'admin' : 'user';
-  currentUser = { name, role };
-  // Update header badge
-  document.getElementById('id-badge').style.display = 'flex';
-  document.getElementById('id-avatar').textContent = avatarInitials(name);
-  document.getElementById('id-avatar').style.background = avatarColor(name);
-  document.getElementById('id-badge-name').textContent = name;
-  document.getElementById('id-badge-role').textContent = role === 'admin' ? '⚡ Admin' : '👤 User';
-  // Show/hide admin controls
-  if (role === 'admin') {
-    document.body.classList.add('is-admin');
-    ['btn-fleet-mgr','btn-dummy','btn-clear-all'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.style.display = 'flex';
-    });
-  } else {
-    document.body.classList.remove('is-admin');
-    ['btn-fleet-mgr','btn-dummy','btn-clear-all'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.style.display = 'none';
-    });
-  }
-  try { localStorage.setItem('ops_kp_user', JSON.stringify({ name })); } catch(e) {}
-}
-
-function confirmIdentity() {
-  const raw = (document.getElementById('id-name-input').value || '').trim().toUpperCase();
-  if (raw.length < 2) return;
-  applyIdentity(raw);
-  addLog(0, 'in', 'SESSION START', `${raw} · Role: ${currentUser.role}`);
-  document.getElementById('id-overlay').style.display = 'none';
-  persist();
-}
-function openSwitchUser() {
-  document.getElementById('switch-user-sub').textContent = `Currently: ${currentUser?.name || '—'}`;
-  document.getElementById('switch-name-input').value = '';
-  document.getElementById('ov-switch-user').classList.add('open');
-  setTimeout(() => document.getElementById('switch-name-input').focus(), 80);
-}
-function closeSwitchUser() { document.getElementById('ov-switch-user').classList.remove('open'); }
-function applySwitchUser() {
-  const raw = (document.getElementById('switch-name-input').value || '').trim().toUpperCase();
-  if (raw.length < 2) { alert('Please enter a valid name.'); return; }
-  const prev = currentUser?.name || '—';
-  addLog(0, 'in', 'USER SWITCH', `${prev} → ${raw}`);
-  applyIdentity(raw);
-  addLog(0, 'in', 'SESSION START', `${raw} · Role: ${currentUser.role}`);
-  closeSwitchUser(); persist();
-}
-
-// Wire onboarding UI after DOM ready
+// Expose admin buttons always — PIN gates the action, not the button
 document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('id-name-input');
-  const btn = document.getElementById('id-confirm-btn');
-  if (inp && btn) {
-    inp.addEventListener('input', () => { btn.disabled = inp.value.trim().length < 3; });
-    inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !btn.disabled) confirmIdentity(); });
-  }
-  const sw = document.getElementById('switch-name-input');
-  if (sw) sw.addEventListener('keydown', e => { if (e.key === 'Enter') applySwitchUser(); });
-  // Restore saved user
-  try {
-    const saved = JSON.parse(localStorage.getItem('ops_kp_user') || 'null');
-    if (saved?.name) { applyIdentity(saved.name); document.getElementById('id-overlay').style.display = 'none'; }
-  } catch(e) {}
+  ['btn-fleet-mgr','btn-dummy','btn-clear-all'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'flex';
+  });
+  document.getElementById('id-badge') && (document.getElementById('id-badge').style.display = 'none');
 });
+
+// Wrap admin actions behind PIN check
+const _origOpenFleetMgr = openFleetMgr;
+openFleetMgr = () => checkAdminPin(_origOpenFleetMgr);
+const _origAddDummy = addDummyRecords;
+addDummyRecords = () => checkAdminPin(_origAddDummy);
+const _origClearAll = confirmClearAll;
+confirmClearAll = () => checkAdminPin(_origClearAll);
+
+// addLog stamps 'by' from the action context — set per-action via actingAs()
+let _actionBy = null;
+function actingAs(name) { _actionBy = name || null; }
 
 // ─── FLEET MANAGEMENT CRUD ────────────────────────────────
 let fleetEditingId = null; // null = add mode, number = edit mode
@@ -2462,17 +2406,17 @@ function toggleCloseEarly() {
 }
 function applyKpClose() {
   const driver = (document.getElementById('kp-close-driver').value || '').trim().toUpperCase();
-  if (!driver) { alert('Please enter the transport driver\'s rank and name.'); return; }
+  if (!driver) { alert('Enter the transport driver\'s rank and name.'); return; }
   const sig = getSigDataURL('sig-kp-close');
-  if (!sig) { alert('Driver signature is required to close the keypress.'); return; }
+  if (!sig) { alert('Driver signature required.'); return; }
   const isEarly = document.getElementById('kp-close-early-chk').checked;
   const earlyReason = (document.getElementById('kp-close-early-reason').value || '').trim();
   const ts = Date.now();
   kpStatus = 'closed';
-  const entry = { action: 'CLOSE', ts, by: currentUser?.name || 'UNKNOWN', driver, driverSig: sig, early: isEarly, earlyReason };
+  const entry = { action: 'CLOSE', ts, driver, driverSig: sig, early: isEarly, earlyReason };
   kpLog.push(entry);
-  // Audit log
   const detail = `Driver: ${driver}${isEarly ? ' · EARLY CLOSE' : ''}${earlyReason ? ' · ' + earlyReason : ''}`;
+  actingAs(driver);
   addLog(0, 'in', 'KEYPRESS CLOSED', detail);
   closeKpCloseModal();
   showKpLockedOverlay();
@@ -2519,9 +2463,10 @@ function applyKpOpen() {
   }
   const ts = Date.now();
   kpStatus = 'open';
-  const entry = { action: 'OPEN', ts, by: currentUser?.name || 'UNKNOWN', driver, driverSig: sig, specialPurpose: specialPurpose || null };
+  const entry = { action: 'OPEN', ts, driver, driverSig: sig, specialPurpose: specialPurpose || null };
   kpLog.push(entry);
   const detail = `Driver: ${driver}${specialPurpose ? ' · SPECIAL: ' + specialPurpose : ''}`;
+  actingAs(driver);
   addLog(0, 'in', isSameDay ? 'KEYPRESS REOPENED (SPECIAL)' : 'KEYPRESS OPENED', detail);
   closeKpOpenModal();
   hideKpLockedOverlay();
@@ -2534,10 +2479,8 @@ function showKpLockedOverlay() {
   const lastClose = [...kpLog].reverse().find(e => e.action === 'CLOSE');
   if (lastClose) {
     document.getElementById('kp-closed-at-val').textContent = fmtDT(lastClose.ts);
-    document.getElementById('kp-closed-by-val').textContent = lastClose.by || '—';
     document.getElementById('kp-closed-driver-val').textContent = lastClose.driver || '—';
-    const earlyRow = document.getElementById('kp-early-row');
-    earlyRow.style.display = lastClose.early ? '' : 'none';
+    document.getElementById('kp-early-row').style.display = lastClose.early ? '' : 'none';
   }
   ov.style.display = 'flex';
   document.getElementById('kp-close-bar').style.display = 'none';
@@ -2596,9 +2539,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="kp-locked-meta">
       <div class="kp-meta-row"><span class="kp-meta-lbl">Closed at</span><span class="kp-meta-val" id="kp-closed-at-val">—</span></div>
-      <div class="kp-meta-row"><span class="kp-meta-lbl">Closed by</span><span class="kp-meta-val" id="kp-closed-by-val">—</span></div>
       <div class="kp-meta-row"><span class="kp-meta-lbl">Driver (Transport)</span><span class="kp-meta-val" id="kp-closed-driver-val">—</span></div>
-      <div class="kp-meta-row" id="kp-early-row" style="display:none;"><span class="kp-meta-lbl">Note</span><span class="kp-meta-val" style="color:var(--offrun);">Closed early (pre-midnight)</span></div>
+      <div class="kp-meta-row" id="kp-early-row" style="display:none;"><span class="kp-meta-lbl">Note</span><span class="kp-meta-val" style="color:var(--offrun);">Closed early</span></div>
     </div>
     <div class="kp-locked-body">
       <button class="kp-open-btn" id="kp-open-btn" onclick="openKpOpenModal()">🔓 Open Keypress</button>
